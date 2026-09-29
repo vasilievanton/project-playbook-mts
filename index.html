@@ -77,6 +77,7 @@ li.item b{font-weight:650}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;color:var(--ink)}
 .chip::before{content:"→";color:var(--accent)}
 .chip:hover{border-color:var(--accent)}
+.chip.newtab::before{content:"↗"}
 .callout{border:1px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:20px 22px;margin-top:22px}
 .callout h3{margin:0 0 10px;font-size:17px}
 .callout p{margin:0 0 10px}
@@ -818,16 +819,31 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   <div class="grid">
     <div class="card" id="test-who"><h3>Кто и когда тестирует</h3><ul class="items">
       <li class="item f">На проекте есть тестировщик. Он постоянно проходит на dev-сервере всё, что уже должно работать, и заводит задачи на то, что не работает.</li>
+      <li class="item f"><b>Две админки: тестовая и продовая.</b> Контент сначала заводим в тестовую и там же проверяем — как бы долго и муторно это ни было. На прод он уходит только после того, как его посмотрели на тесте. Исключения обсуждаем отдельно, а не решаем на ходу.</li>
+      <li class="item f">На тесте видно то, чего не видно в документе с контентом: переносы и реальную длину текстов, качество и пропорции картинок, порядок вопросов, начисление баллов. Та же правка на проде — это правка при живых пользователях, и её уже кто-то успел увидеть.</li>
       <li class="item f">Сначала внутренний тест, потом клиентский. Клиенту даём дату и список того, что можно смотреть, а что ещё вносится. Сборку на тест отдаём заранее, а не накануне запуска.</li>
       <li class="item f">Разработчики заранее знают дату и время показа клиенту и говорят, что ещё не доделано и смотреть не нужно.</li>
       <li class="item f">Приёмку делает не исполнитель. В трекере у колонки «Тестирование/проверка» есть хозяин.</li>
     </ul></div>
     <div class="card" id="test-regress"><h3>Регрессия и кэш</h3><ul class="items">
       <li class="item f">После каждого деплоя прогоняем ключевые сценарии: регистрация, вход, прохождение, начисление, запись, письма. <span class="yr y25">2025</span>Исправление отображения слотов сломало кнопку записи, и два дня этого никто не замечал, пока не нашёл эксперт МТС.</li>
-      <li class="item f">Перед отправкой скринов клиенту чистим кэш. Клиенту даём инструкцию по очистке кэша. Для Safari на iOS это «Настройки → Safari → Дополнительные → Данные сайтов → Удалить все данные».</li>
+      <li class="item f">Перед отправкой скринов клиенту чистим кэш у себя, а клиенту даём инструкцию под его устройство. <a class="chip" href="#test-cache">Как чистить кэш</a></li>
       <li class="item f">Если клиент нашёл баг, просим скринкаст воспроизведения и устройство.</li>
     </ul>
     <div class="related"><a class="chip" href="#team-bug">Шаблон баг-репорта</a></div></div>
+    <div class="card wide" id="test-cache"><h3>Как чистить кэш</h3>
+      <p class="note" style="margin:0 0 12px">Старый кэш — самая частая причина спора «у меня не так»: клиент видит вчерашнюю версию и заводит багов, которых нет. Самый быстрый способ для клиента — открыть сайт в приватной вкладке, там кэша нет вообще.</p><ul class="items">
+      <li class="item f"><b>Chrome, Edge и Яндекс.Браузер на Windows.</b> Жёсткая перезагрузка — Ctrl + Shift + R или Ctrl + F5. Полная очистка — Ctrl + Shift + Del, отметить «Изображения и другие файлы, сохранённые в кэше».</li>
+      <li class="item f"><b>Chrome, Edge и Яндекс.Браузер на macOS.</b> Жёсткая перезагрузка — Cmd + Shift + R. Полная очистка — Cmd + Shift + Del.</li>
+      <li class="item f"><b>Safari на macOS.</b> Включаем меню «Разработка»: Safari → Настройки → Дополнения → «Показывать функции для веб-разработчиков». Дальше Cmd + Option + E и обычная перезагрузка Cmd + R. Полностью по домену: Настройки → Конфиденциальность → «Управлять данными сайтов» → найти сайт → «Удалить».</li>
+      <li class="item f"><b>Firefox.</b> Жёсткая перезагрузка — Ctrl + Shift + R, на macOS Cmd + Shift + R. Полная очистка — Ctrl + Shift + Del, отметить «Кэш».</li>
+      <li class="item f"><b>Safari на iPhone и iPad.</b> Настройки → Safari → Дополнительные → Данные сайтов → «Удалить все данные». Вариант «Очистить историю и данные сайтов» тоже работает, но выкидывает из всех аккаунтов во всех сайтах — клиента об этом предупреждаем.</li>
+      <li class="item f"><b>Chrome на iPhone и iPad.</b> В приложении «…» → Очистить историю → отметить «Файлы cookie, данные сайтов» и «Изображения и файлы, сохранённые в кэше».</li>
+      <li class="item f"><b>Chrome на Android.</b> ⋮ → Настройки → Конфиденциальность и безопасность → «Удалить данные о просмотренных страницах» → «Изображения и другие файлы, сохранённые в кэше».</li>
+      <li class="item f"><b>Яндекс.Браузер на Android.</b> ⋮ → Настройки → Очистить данные → отметить «Кэш» → «Очистить».</li>
+      <li class="item f"><b>Когда возиться некогда — приватная вкладка.</b> Ctrl + Shift + N в Chrome, Edge и Яндекс.Браузере, Cmd + Shift + N в Safari на macOS, Ctrl + Shift + P в Firefox, на телефоне — «Новая вкладка инкогнито» или «Частный доступ». Для быстрой проверки достаточно, но для проверки сценариев с входом — нет: сессии и сохранённые данные там тоже пустые.</li>
+      <li class="item f"><b>Мобильные приложения-обёртки</b> вроде корпоративного браузера МТС кэш держат отдельно. Если клиент смотрит оттуда, просим повторить в обычном браузере, прежде чем чинить «баг».</li>
+    </ul></div>
     <div class="card wide" id="test-what"><h3>Что проверяем</h3><ul class="items">
       <li class="item f"><b>Сборку против прототипа и ТЗ.</b> Всё, что есть в прототипе и ТЗ, есть на сайте. <span class="yr y25">2025</span>Реферальную механику согласовали за три недели до запуска, а в дизайне и сборке её не оказалось. Клиенту обещали рейтинг всех участников, а в сборке был топ-10.</li>
       <li class="item f"><b>Не только баги, но и невнесённое.</b> Правила, призы, копирайт, год в ©, мёртвые ссылки, модалки со старыми текстами — <span class="yr y24">2024</span>всё это нашлось перед показом.</li>
@@ -1493,6 +1509,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   });
   document.addEventListener('click',function(e){
     var a=e.target.closest('a[href^="#"]'); if(!a)return;
+    if(a.target==='_blank')return;
     var id=a.getAttribute('href').slice(1); if(!id||!document.getElementById(id))return;
     e.preventDefault();
     if(a.closest('.toc')||a.hasAttribute('data-nav')){stack=[];go(id,false);if(mq.matches)tb.open=false;}
@@ -1565,6 +1582,15 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
     });
   });
   prog();
+
+  /* чипы в другой раздел открываем новой вкладкой, чтобы не терять место чтения */
+  $$('.chip[href^="#"]').forEach(function(a){
+    var t=document.getElementById(a.getAttribute('href').slice(1)); if(!t)return;
+    var to=t.closest('section.sec'); if(!to||to===a.closest('section.sec'))return;
+    a.target='_blank'; a.rel='noopener';
+    a.classList.add('newtab');
+    a.title='Откроется в новой вкладке: '+titles[to.id];
+  });
 
   /* старт: открываем раздел из адреса или первый */
   var h0=location.hash.slice(1);
