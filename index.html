@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Правила ведения проектов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Памятка: слева вкладки-разделы, справа один раздел за раз; ссылки между разделами ведут к нужной карточке, кнопка «Назад» возвращает на тот же экран */
+:root{
+  --bg:#F3F4F6; --bg2:#E9ECF0; --surface:#FFFFFF; --ink:#15181C; --muted:#56606B; --line:#D9DEE4;
+  --accent:#C92A3A; --accent-soft:#FBE8EA; --gate:#1D6B74; --gate-soft:#E1F1F2;
+  --y24:#2F66AE; --y25:#9A6410; --y26:#6B44B5;
+  --good:#2C7A4B; --warn:#9A6410;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111316; --bg2:#1A1E23; --surface:#171A1E; --ink:#E8EBEE; --muted:#9BA4AE; --line:#2B3137;
+  --accent:#FF5E68; --accent-soft:#361B1F; --gate:#5BBBC4; --gate-soft:#15292C;
+  --y24:#83AAE8; --y25:#E3AE55; --y26:#B597F2; --good:#6CC592; --warn:#E3AE55; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111316; --bg2:#1A1E23; --surface:#171A1E; --ink:#E8EBEE; --muted:#9BA4AE; --line:#2B3137;
+  --accent:#FF5E68; --accent-soft:#361B1F; --gate:#5BBBC4; --gate-soft:#15292C;
+  --y24:#83AAE8; --y25:#E3AE55; --y26:#B597F2; --good:#6CC592; --warn:#E3AE55; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1300px;margin:0 auto;padding-inline:24px;padding-block:0 96px}
+.side{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;max-height:100vh;overflow:auto;padding-block:28px 28px}
+.side summary{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;padding:6px 0}
+.side summary::-webkit-details-marker{display:none}
+@media (min-width:981px){.side summary{display:none}}
+.brand{font-family:var(--f-display);font-weight:700;font-size:15px;line-height:1.25;margin:0 0 18px}
+.brand span{display:block;font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.toc-group{margin:18px 0 6px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.toc a{display:block;text-decoration:none;font-size:14px;padding:5px 10px;border-radius:8px;color:var(--muted)}
+.toc a:hover{background:var(--bg2);color:var(--ink)}
+.toc a[aria-current="true"]{background:var(--surface);color:var(--ink);box-shadow:inset 3px 0 0 var(--accent)}
+main{min-width:0}
+.hero{padding-block:44px 8px;display:grid;gap:18px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,4.6vw,48px);line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lead{font-size:19px;color:var(--muted);max-width:66ch;margin:0}
+.sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--muted)}
+.src b{display:block;color:var(--ink);font-size:15px;margin-top:6px}
+.search{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;position:sticky;top:10px;z-index:5;margin-top:24px;box-shadow:0 6px 18px -12px rgba(0,0,0,.35)}
+.search input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);font-size:16px;outline:none}
+.search .count{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.search button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:4px 10px;cursor:pointer}
+section.sec{margin-top:34px;scroll-margin-top:80px}
+.searching section.sec{margin-top:64px}
+.sec-head{display:grid;gap:8px;max-width:72ch}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,2.6vw,30px);line-height:1.18;margin:0;text-wrap:balance}
+.sec-lead{font-size:17px;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;margin-top:22px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;min-width:0}
+.card h3{font-size:17px;font-weight:700;margin:0 0 12px;line-height:1.3}
+.card.wide{grid-column:1/-1}
+ul.items{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+li.item{position:relative;padding-left:18px;font-size:15.5px}
+li.item::before{content:"";position:absolute;left:2px;top:.66em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+li.item b{font-weight:650}
+.yr{display:inline-block;font-family:var(--f-mono);font-size:11px;line-height:1.5;padding:0 6px;border-radius:5px;border:1px solid currentColor;margin-right:5px;vertical-align:1px;white-space:nowrap}
+.y24{color:var(--y24)}.y25{color:var(--y25)}.y26{color:var(--y26)}
+.idea{display:inline-block;font-family:var(--f-mono);font-size:11px;line-height:1.5;padding:0 6px;border-radius:5px;background:var(--gate-soft);color:var(--gate);margin-right:5px;vertical-align:1px}
+.related{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;align-items:center}
+.related .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;color:var(--ink)}
+.chip::before{content:"→";color:var(--accent)}
+.chip:hover{border-color:var(--accent)}
+.callout{border:1px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:20px 22px;margin-top:22px}
+.callout h3{margin:0 0 10px;font-size:17px}
+.callout p{margin:0 0 10px}
+.callout p:last-child{margin:0}
+.quote{border-left:3px solid var(--gate);padding:4px 0 4px 14px;margin:14px 0 0;color:var(--ink);font-size:15.5px}
+.quote cite{display:block;font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:4px}
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:14px;margin-top:22px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rule .n{font-family:var(--f-display);font-weight:700;font-size:22px;color:var(--accent);line-height:1}
+.rule h3{margin:0;font-size:16.5px;line-height:1.3}
+.rule p{margin:0;font-size:14.5px;color:var(--muted)}
+.rule .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+.rule .links a{font-size:12.5px}
+/* phase map */
+.scroll{overflow-x:auto;margin-top:22px;padding-bottom:4px}
+.pmap{display:grid;grid-template-columns:150px repeat(3,minmax(190px,1fr));gap:8px;min-width:760px}
+.pmap .hd{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 10px}
+.pmap .hd.now{color:var(--accent)}
+.pmap .ph{padding:12px 10px;font-weight:700;font-size:15px;line-height:1.25}
+.pmap .ph small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:4px}
+.pmap .cell{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;min-width:0}
+.pmap .cell.now{background:var(--accent-soft);border-color:transparent}
+.pmap .cell.empty{background:transparent;border-style:dashed;color:var(--muted)}
+.pmap .cell a{display:block;text-decoration:none;padding:2px 0;line-height:1.35}
+.pmap .cell a:hover{text-decoration:underline}
+.pmap .gate{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:6px 2px;font-weight:650;font-size:14px;color:var(--gate)}
+.pmap .gate::after{content:"";flex:1;border-top:2px dashed var(--gate);opacity:.55}
+.pmap .gate i{width:12px;height:12px;transform:rotate(45deg);background:var(--gate);flex:none;border-radius:2px}
+.pmap .gate.launch{color:var(--accent)}
+.pmap .gate.launch::after{border-color:var(--accent)}
+.pmap .gate.launch i{background:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:14px;font-size:13.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{width:14px;height:14px;border-radius:4px;border:1px solid var(--line);background:var(--surface)}
+.sw.now{background:var(--accent-soft);border-color:transparent}
+.sw.gate{transform:rotate(45deg);background:var(--gate);border:0;width:10px;height:10px}
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-top:22px}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:15px}
+th{text-align:left;font-family:var(--f-mono);font-weight:600;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--bg2);padding:11px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{font-weight:650}
+td .chip{margin-top:6px;font-size:12px;padding:2px 9px}
+/* steps */
+ol.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:12px}
+ol.steps li{counter-increment:s;position:relative;padding-left:40px;font-size:15.5px;min-height:28px}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:28px;height:28px;border-radius:50%;background:var(--bg2);color:var(--ink);font-family:var(--f-display);font-size:13px;display:grid;place-items:center}
+/* code */
+.code{position:relative;background:var(--bg2);border-radius:12px;padding:16px 18px;margin-top:14px;overflow-x:auto}
+.code{padding-top:44px}
+.code pre{margin:0;font-family:var(--f-mono);font-size:13.5px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.copy{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:3px 10px;cursor:pointer}
+/* board */
+.board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;margin-top:14px}
+.bcol{flex:0 0 190px;background:var(--bg2);border-radius:12px;padding:12px}
+.bcol h4{margin:0 0 8px;font-family:var(--f-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bcol.hl{box-shadow:inset 0 0 0 2px var(--gate)}
+.kc{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:13.5px;line-height:1.35;margin-top:8px}
+.stk{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.stk span{font-family:var(--f-mono);font-size:10.5px;padding:1px 6px;border-radius:4px;background:var(--bg2);color:var(--muted)}
+.stk span.r{background:var(--gate-soft);color:var(--gate)}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+/* checklists */
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:16px;margin-top:22px;align-items:start}
+.cl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.cl-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.cl h3{margin:0;font-size:16.5px}
+.cl .prog{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.bar{height:4px;background:var(--bg2);border-radius:4px;margin:10px 0 12px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--good);transition:width .2s}
+.ci{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:14.5px;cursor:pointer}
+.ci input{margin-top:4px;accent-color:var(--good);flex:none;width:16px;height:16px}
+.ci input:checked+span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.cl .go{display:inline-block;margin-top:10px;font-size:13px}
+.reset{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;margin-top:14px}
+footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.nores{margin-top:40px;color:var(--muted);font-size:16px}
+/* launch flow */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px;margin-top:18px;counter-reset:fl}
+.flow .st{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.4;position:relative}
+.flow .st b{display:block;font-family:var(--f-mono);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.flow .st:nth-child(4){border-color:var(--accent);background:var(--accent-soft)}
+.rec{display:inline-block;font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:5px;background:var(--good);color:var(--surface);margin-left:6px;vertical-align:2px}
+.cl{scroll-margin-top:80px}
+.checks-bar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin-top:18px;font-size:14px;color:var(--muted)}
+.checks-bar .reset{margin-top:0}
+.searching .scroll,.searching .scroll-hint,.searching .legend,.searching .flow,.searching .board-wrap,.searching .checks-bar{display:none}
+.rule h3+p{margin-top:0}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.cl .go{display:inline-flex;margin-top:10px;font-size:13px}
+.scroll-hint{display:none;font-size:13px;color:var(--muted);margin-top:14px}
+@media (max-width:980px){
+  .side summary{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--surface);display:flex;justify-content:space-between}
+  .side summary::after{content:"▾";font-family:var(--f-body)}
+  .side details[open] summary::after{content:"▴"}
+  .side details[open] summary{margin-bottom:14px}
+}
+@media (max-width:800px){.scroll-hint{display:block}}
+@media (max-width:700px){
+  .tbl{background:transparent;border:0;overflow:visible;border-radius:0}
+  .tbl table,.tbl tbody,.tbl tr,.tbl td{display:block;min-width:0;width:auto}
+  .tbl thead{display:none}
+  .tbl tr{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px}
+  .tbl td{border:0;padding:5px 0}
+  .tbl td:first-child{font-size:16px;padding-top:0}
+  .tbl td[data-label]::before{content:attr(data-label);display:block;font-family:var(--f-mono);font-weight:600;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+}
+@media (max-width:980px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:16px}
+  .side{position:static;max-height:none;padding-block:18px 0;border-bottom:1px solid var(--line)}
+  .toc{columns:2;column-gap:18px}
+  .toc-group{break-after:avoid}
+  .hero{padding-block:26px 4px}
+}
+@media (max-width:520px){.toc{columns:1}.lead{font-size:17px}}
+
+/* вкладки и возврат */
+.card,.cl,.rule,.tbl,.callout{scroll-margin-top:96px}
+.flash{animation:flash 1.8s ease}
+@keyframes flash{0%,45%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 0 transparent}}
+.backbtn{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:30;display:inline-flex;gap:8px;align-items:center;max-width:calc(100vw - 32px);font:inherit;font-size:14.5px;font-weight:600;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:11px 20px;box-shadow:0 10px 28px -10px rgba(0,0,0,.55);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.backbtn span{overflow:hidden;text-overflow:ellipsis}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:48px}
+.pager a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:600;min-width:0}
+.pager a:hover{border-color:var(--accent)}
+.pager a small{display:block;font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.pager .next{grid-column:2;text-align:right}
+.searching .pager,.searching .hero{display:none}
+.ci small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.ci b{font-weight:650}
+.proto{border:1px solid var(--gate);background:var(--gate-soft);border-radius:14px;padding:20px 22px;margin-top:22px}
+.proto h3{margin:0 0 10px;font-size:17px;color:var(--ink)}
+.proto .pair{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:14px 0}
+.proto .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px}
+.proto .box b{display:block;margin-bottom:4px}
+.proto .sync{font-family:var(--f-mono);font-size:22px;color:var(--gate);text-align:center}
+@media (max-width:620px){.proto .pair{grid-template-columns:1fr}.proto .sync{transform:rotate(90deg)}}
+#lists .ci input:checked+span{color:var(--ink);text-decoration:none}
+#lists .ci:has(input:checked){background:var(--gate-soft);border-radius:8px;margin-inline:-8px;padding-inline:8px}
+.proto .sync{font-size:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<aside class="side">
+  <details id="tocbox" open>
+    <summary>Разделы</summary>
+    <p class="brand"><span>Deep · памятка</span>Правила ведения проектов</p>
+    <nav class="toc" aria-label="Разделы">
+      <div class="toc-group">Основа</div>
+      <a href="#rules">12 главных правил</a>
+      <a href="#phases">План по фазам</a>
+      <div class="toc-group">По этапам</div>
+      <a href="#start">Старт проекта</a>
+      <a href="#mechanics">Прототип, механика и ТЗ</a>
+      <a href="#prevent">Исключаем логикой</a>
+      <a href="#admin">Админка и данные</a>
+      <a href="#design">Дизайн и бренд МТС</a>
+      <a href="#texts">Тексты и контент</a>
+      <a href="#legal">Юридическое</a>
+      <a href="#tech">Техника и письма</a>
+      <a href="#testing">Тестирование и приёмка</a>
+      <a href="#launch">Запуск</a>
+      <a href="#ops">После запуска</a>
+      <a href="#offline">Офлайн, трансляция, розыгрыши</a>
+      <a href="#closing">Закрытие</a>
+      <div class="toc-group">Работа</div>
+      <a href="#team">Команда и подрядчики</a>
+      <a href="#yougile">Трекер YouGile</a>
+      <a href="#client">Клиент</a>
+      <div class="toc-group">Шпаргалки</div>
+      <a href="#lists">Типовые списки</a>
+      <a href="#pitfalls">Грабли</a>
+      <a href="#checklists">Чек-листы</a>
+    </nav>
+  </details>
+</aside>
+
+<main>
+<header class="hero" id="hero">
+  <div class="eyebrow">Deep · промо-платформы для МТС и не только</div>
+  <h1>Правила ведения проектов</h1>
+  <p class="lead">Что делать на каждом этапе, что не забыть и где мы уже спотыкались. Всё собрано из опыта трёх проектов, год в цветной метке показывает, откуда пример.</p>
+  <div class="sources">
+    <div class="src"><span class="yr y24">2024</span><b>Кодиленд</b>Город профессий для детей сотрудников МТС: игры по профессиям, призы, офлайн-праздник.</div>
+    <div class="src"><span class="yr y25">2025</span><b>Инклюзивный карьерный марафон</b>Платформа для людей с инвалидностью: тесты, собеседования с HR, ИИ-проверка резюме, офлайн-ивент.</div>
+    <div class="src"><span class="yr y26">2026</span><b>СоздАния</b>Игровая платформа для детей сотрудников: районы, игры, личный кабинет родителя, запись к психологам.</div>
+  </div>
+</header>
+<div class="search" role="search">
+  <label for="q" class="eyebrow" style="white-space:nowrap">Поиск</label>
+  <input id="q" type="search" placeholder="по всем разделам: домен, розыгрыш, письма…" autocomplete="off">
+  <span class="count" id="qcount"></span>
+  <button type="button" id="qclear" hidden>Сбросить</button>
+</div>
+<div id="results-top" aria-hidden="true"></div>
+<p class="nores" id="nores" hidden>Ничего не нашлось. Попробуй другое слово.</p>
+
+<section class="sec" id="rules" data-group="Основа">
+  <div class="sec-head">
+    <div class="eyebrow">Основа</div>
+    <h2>12 главных правил</h2>
+    <p class="sec-lead">Эти правила всплывали в ретро всех трёх проектов. Каждый раз, когда нарушали одно из них, получали аврал.</p>
+  </div>
+  <div class="rules">
+    <article class="rule f"><div class="n">01</div><h3>Сначала прототип с текстами и ТЗ, потом дизайн, потом разработка</h3><p>Кликабельный прототип с предфинальными текстами и ТЗ рядом → дизайн всех экранов и модалок, описание админки → вёрстка и бэк. Дорого, но дешевле, чем потом тушить пожар.</p><div class="links"><a class="chip" href="#mech-proto">Прототип и ТЗ</a><a class="chip" href="#phases">План по фазам</a></div></article>
+    <article class="rule f"><div class="n">02</div><h3>Механика описана письменно до разработки</h3><p>Баллы, попытки, повторы, тай-брейк, роли, возрасты. Если механику досочиняют в чате, каждый понимает её по-своему, и потом всё переделывается.</p><div class="links"><a class="chip" href="#mech-activity">Что описать</a></div></article>
+    <article class="rule f"><div class="n">03</div><h3>Один источник правды и один трекер с первого дня</h3><p>Правки живут только в трекере. Правка, оставленная в чате, теряется среди сотен сообщений и не доезжает до сайта.</p><div class="links"><a class="chip" href="#yougile">YouGile</a><a class="chip" href="#team-tracker">Трекер и правки</a></div></article>
+    <article class="rule f"><div class="n">04</div><h3>Обещанное клиенту молча не выкидываем</h3><p><span class="yr y25">2025</span>От версии для слабовидящих отказались по техническим причинам, но до клиента это решение не дошло. Любой технический отказ сразу обсуждаем с аккаунтом и клиентом.</p><div class="links"><a class="chip" href="#client-comm">Коммуникация с клиентом</a></div></article>
+    <article class="rule f"><div class="n">05</div><h3>На сайте только согласованное</h3><p><span class="yr y25">2025</span>Тексты, которых не было в согласованных макетах, и расхождения с фигмой МТС назвал в числе оснований для штрафа.</p><div class="links"><a class="chip" href="#texts-copy">Копирайт</a><a class="chip" href="#client-qa">Штрафы</a></div></article>
+    <article class="rule f"><div class="n">06</div><h3>Коммуникации — либо нормально, либо никак</h3><p>Письма, отбивки и валидации обязательны. Шаблон письма появляется вместе с дизайном, варианты рассылок продумываем заранее. Без подтверждения почты сайт не запускаем.</p><div class="links"><a class="chip" href="#tech-mail">Письма</a><a class="chip" href="#list-mail">Список рассылок</a></div></article>
+    <article class="rule f"><div class="n">07</div><h3>Тестировщик на проект, клиенту — неделя на тест</h3><p>Тестировщик нужен с первых сборок, а не за день до старта. Это дешевле, чем баги, найденные клиентом на проде.</p><div class="links"><a class="chip" href="#test-who">Тестирование</a></div></article>
+    <article class="rule f"><div class="n">08</div><h3>Внутренний дедлайн за несколько дней до запуска</h3><p>Проверку ИБ МТС закладываем за 2–3 дня до старта. В день запуска ничего не доделываем.</p><div class="links"><a class="chip" href="#launch-before">Запуск</a></div></article>
+    <article class="rule f"><div class="n">09</div><h3>Делаем проще, чем хочется</h3><p>Каждая вариация по возрасту или роли — это отдельная вёрстка, проверка и логика баллов. Механика одна, сложность добавляем контентом.</p><div class="links"><a class="chip" href="#mech-unify">Унификация</a><a class="chip" href="#prevent">Исключаем логикой</a></div></article>
+    <article class="rule f"><div class="n">10</div><h3>Доп.работы фиксируем сразу, с часами</h3><p><span class="yr y25">2025</span>Доп.смету примерно на 280 тыс. ₽ собирали задним числом по памяти, и наверняка что-то не вспомнили.</p><div class="links"><a class="chip" href="#client-scope">Скоуп и деньги</a><a class="chip" href="#closing">Закрытие</a></div></article>
+    <article class="rule f"><div class="n">11</div><h3>Всё, что понадобится в конце, закладываем на старте</h3><p>Телефоны для обзвона победителей, отчётные метрики, полная выгрузка, логи отправки писем, схема передачи домена.</p><div class="links"><a class="chip" href="#start-agree">Старт</a><a class="chip" href="#admin-export">Выгрузка</a></div></article>
+    <article class="rule f"><div class="n">12</div><h3>Решения — письменно и всем</h3><p>Итоги созвона сразу текстом всем, включая тех, кого не было. Иначе через день каждый помнит договорённость по-своему.</p><div class="links"><a class="chip" href="#team-chat">Коммуникации</a></div></article>
+  </div>
+</section>
+
+<section class="sec" id="phases" data-group="Основа">
+  <div class="sec-head">
+    <div class="eyebrow">Основа</div>
+    <h2>План по фазам: что можно делать раньше</h2>
+    <p class="sec-lead">Инфраструктура, инструменты и типовые модули не ждут ни механику, ни контент клиента. Их начинаем сразу, часть — ещё до старта проекта. Тогда сжатые сроки уходят на сложное, а не на хостинг и доступы.</p>
+  </div>
+  <p class="scroll-hint">Таблица листается вбок →</p>
+  <div class="scroll">
+    <div class="pmap" role="table" aria-label="Фазы проекта и что в них делаем">
+      <div class="hd">Фаза</div><div class="hd now">Не ждёт механику — делаем сразу</div><div class="hd">Ждёт механику или дизайн</div><div class="hd">Ждёт клиента</div>
+
+      <div class="ph">До старта<small>информации ещё нет</small></div>
+      <div class="cell now"><a href="#yougile">Доска YouGile по шаблону</a><a href="#start-domain">Варианты домена</a><a href="#start-tools">Чат, папка, Figma</a><a href="#start-team">Бронь юриста и команды</a><a href="#start-ask">Вопросы к кикоффу</a><a href="#list-reg">Черновик полей регистрации</a></div>
+      <div class="cell empty">—</div>
+      <div class="cell empty">—</div>
+
+      <div class="ph">Старт</div>
+      <div class="cell now"><a href="#tech-hosting">Хостинг, SMTP, HTTPS, CI</a><a href="#design-mockups">Регистрация, вход, личный кабинет</a><a href="#admin-metrics">Список метрик</a></div>
+      <div class="cell"><a href="#mech-proto">Прототип с предфинальными текстами</a><a href="#mech-proto">ТЗ вкладкой в прототипе</a><a href="#mech-steps">Прогон через разработку</a></div>
+      <div class="cell"><a href="#start-ask">Гайды, ToV, нейминг</a><a href="#start-domain">Регистратор домена</a><a href="#start-domain">Вайт-листы СБ</a><a href="#list-reg">Поля регистрации</a></div>
+
+      <div class="ph">Механика и дизайн</div>
+      <div class="cell now"><a href="#admin-panel">Админка: пользователи, логи, модерация</a><a href="#admin-export">Полная выгрузка</a><a href="#ops-support">FAQ и шаблоны ответов</a></div>
+      <div class="cell"><a href="#mech-activity">Описание активностей</a><a href="#design-mockups">Дизайн всех состояний</a><a href="#tech-mail">Шаблон письма и первые письма</a><a href="#list-mail">Список рассылок</a><a href="#legal-rules">Бриф юристу</a><a href="#prevent">Что исключаем логикой</a></div>
+      <div class="cell"><a href="#client-approve">Согласование дизайна</a><a href="#legal-prizes">Призы и их стоимость</a><a href="#off-stream">План трансляции</a></div>
+
+      <div class="gate"><i></i>Гейт: механика и дизайн утверждены</div>
+
+      <div class="ph">Производство</div>
+      <div class="cell now"><a href="#test-what">Тест базовых сценариев</a><a href="#ops-support">Шаблоны поддержки</a></div>
+      <div class="cell"><a href="#mech-unify">Вёрстка и бэк механик</a><a href="#texts-games">Контент и правила игр</a><a href="#texts-admin">Контент в админку</a><a href="#tech-mail">Все письма и рассылки</a></div>
+      <div class="cell"><a href="#texts-games">Контент клиента</a><a href="#legal-rules">Правила от юристов</a></div>
+
+      <div class="gate"><i></i>Гейт: внутренняя готовность</div>
+
+      <div class="ph">Предзапуск</div>
+      <div class="cell now"><a href="#tech-hosting">Прод: SMTP, HTTPS, деплой, фоновые задачи</a></div>
+      <div class="cell"><a href="#test-what">Регрессия по возрастам</a><a href="#prevent">Проверка на эксплойты</a></div>
+      <div class="cell"><a href="#tech-sec">Проверка СБ и ИБ</a><a href="#test-who">Тест у клиента</a></div>
+
+      <div class="gate launch"><i></i>Запуск</div>
+
+      <div class="ph">Запуск и волны</div>
+      <div class="cell now"><a href="#ops-support">Поддержка</a><a href="#ops-mail">Рассылки</a><a href="#test-regress">Регрессия после деплоя</a></div>
+      <div class="cell"><a href="#ops-waves">Волны по чек-листу</a></div>
+      <div class="cell"><a href="#off-event">Офлайн</a><a href="#off-stream">Трансляция</a><a href="#off-draw">Розыгрыши</a></div>
+
+      <div class="ph">Закрытие</div>
+      <div class="cell now"><a href="#closing">Финальная выгрузка, файлы с сервера</a></div>
+      <div class="cell empty">—</div>
+      <div class="cell"><a href="#closing">Отчёт, доп.смета, передача домена</a></div>
+    </div>
+  </div>
+  <div class="legend"><span><i class="sw now"></i>Можно начинать без механики и без клиента</span><span><i class="sw"></i>Стартует после утверждения или ответа клиента</span><span><i class="sw gate"></i>Гейт — после него меняется режим работы</span><span>Каждый пункт открывает нужный блок, кнопка «Назад» вернёт сюда</span></div>
+  <div class="grid">
+    <div class="card" id="phase-pre"><h3>До старта, пока нет информации</h3><ul class="items">
+      <li class="item f"><b>Доска YouGile.</b> Готовим до старта по шаблону: колонки, стикеры, служебные колонки, шаблон карточки. В первый день команда заходит и сразу работает.</li>
+      <li class="item f"><b>Домен.</b> 2–3 варианта с «mts» латиницей, проверенные на занятость и ассоциации. Регистратора выбираем сразу с прицелом на передачу МТС: <span class="yr y25">2025</span>потребовали RU-CENTER.</li>
+      <li class="item f"><b>Заготовка проекта.</b> Чат с темами, папка на диске, платные места в Figma.</li>
+      <li class="item f"><b>Люди.</b> Бронируем юриста, копирайтера, тестировщика, дизайнера и запасного. Сразу узнаём их графики и смотрим праздники в периоде проекта.</li>
+      <li class="item f"><b>Инфраструктура.</b> Аккаунт хостинга с балансом, проверенные SMTP и HTTPS, CI, резервный стенд.</li>
+      <li class="item f"><b>Вопросы к кикоффу.</b> Гайды и UI-kit, редполитика, ToV, эталонный нейминг, требования ИБ, регистратор домена, бюджет продвижения, отчётные метрики, поля регистрации, рассылки, призы, трансляция.</li>
+      <li class="item f"><b>Заготовки с прошлых проектов.</b> Согласие на ПДн, правила акции как референс для юриста, FAQ, шаблоны ответов поддержки, список писем, фильтр запрещённых слов.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#yougile">Структура доски</a><a class="chip" href="#lists">Типовые списки</a></div></div>
+    <div class="card" id="phase-parallel"><h3>Параллельно с финализацией механики</h3><ul class="items">
+      <li class="item f">Типовые модули дизайним и верстаем сразу: регистрация, вход, «забыл пароль», личный кабинет, FAQ, правила, поддержка. <span class="yr y26">2026</span>Фронту эти экраны были нужны в первую очередь.</li>
+      <li class="item f">Базовую админку строим сразу: пользователи, полная выгрузка, логи, модерация, даты открытия.</li>
+      <li class="item f">Шаблон письма верстаем, как только есть хотя бы предфинальный дизайн, и сразу делаем первые письма: код регистрации, сброс пароля.</li>
+      <li class="item f">Цели метрики и тест-план базовых сценариев не зависят от механики.</li>
+      <li class="item f">Ждут механику только экраны активностей, правила игр, юридические правила, структура контента в админке, баллы и рейтинг.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="sec" id="start" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · старт</div>
+    <h2>Старт проекта</h2>
+    <p class="sec-lead">Всё, что не запросили и не договорили на старте, всплывёт за день до запуска.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="start-first"><h3>Первые дни</h3><ul class="items">
+      <li class="item f">На кикоффе собираем все хотелки клиента и решаем, как совместить их без раздувания объёма.</li>
+      <li class="item f">Сразу после первой встречи — внутренний тайминг. В нём разделяем сроки «делаем» и «согласование» и вписываем, что и когда отдаёт клиент. На этот тайминг потом ссылаемся, когда клиент задерживает.</li>
+      <li class="item f">Одна общая таблица дат открытия всех блоков и активностей — для всей команды. На старт делаем только то, что открывается в день запуска.</li>
+      <li class="item f">Всё согласованное в прошлых проектах МТС переиспользуем, чтобы не проходить согласование заново: структуру фигмы, решения экранов, компоненты.</li>
+    </ul></div>
+    <div class="card" id="start-ask"><h3>Запросить у клиента сразу</h3><ul class="items">
+      <li class="item f"><b>Фигмы и UI-kit</b> на почты всех, кто с ними работает. У МТС это HR-гайд (коммуникации и лого), МТС Junior (детский визуал) и UI-Kit МТС (компоненты и токены). Владельца фигмы у клиента может не быть — тогда пришлют архив.</li>
+      <li class="item f"><b>Редполитику, Tone of Voice и эталонный список названий</b> (вертикали, программы, дочерние компании). <span class="yr y25">2025</span>ToV пришёл уже после запуска, а за несоблюдение редполитики потом грозили штрафом.</li>
+      <li class="item f"><b>Исходники</b> маскотов, КВ и других ассетов — файлами, не скринами.</li>
+      <li class="item f"><b>Список «кто что отдаёт и когда»:</b> КВ, контент, видео, фото, слоты сотрудников, призы. Сроки фиксируем и по задачам на стороне клиента.</li>
+      <li class="item f"><b>Контент партнёров</b> (онлайн-школы, сервисы) считаем риском и сразу держим план Б. <span class="yr y25">2025</span>Один партнёр выпал из проекта, до других долго не могли достучаться.</li>
+    </ul></div>
+    <div class="card" id="start-tools"><h3>Инструменты</h3><ul class="items">
+      <li class="item f"><b>Трекер задач (YouGile).</b> Доску готовим до старта, в первый день даём доступы всем и проверяем, что каждый зашёл и видит нужную доску. Инструменты выбираем доступные из РФ: <span class="yr y24">2024</span>Trello был заблокирован.</li>
+      <li class="item f"><b>Платная Figma.</b> В бесплатном тарифе редактирует только владелец, и PM не может ни поправить макет, ни убрать комменты. Место стоит $17 в месяц; заранее решаем, кто платит, и компенсируем подрядчикам.</li>
+      <li class="item f"><b>Общая папка проекта</b> на диске. Туда забираем все исходники, финальные конфиги, правила и контент клиента.</li>
+      <li class="item f"><b>Инфраструктурные подписки</b> оплачиваем заранее: хостинг, CI-раннер для деплоя, API ИИ-сервисов. Оплата по счёту доходит часами, а сборки на каждую мелочь быстро съедают лимит.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#yougile">Структура доски</a></div></div>
+    <div class="card" id="start-domain"><h3>Домен и почта</h3><ul class="items">
+      <li class="item f">В домене обязательно «mts», латиница, клиенту 2–3 варианта. Проверяем ассоциации: слово «безлимит», например, читается как тариф.</li>
+      <li class="item f">На старте выясняем, как домен потом передаётся МТС. <span class="yr y25">2025</span>Юристы в конце потребовали перенести его в RU-CENTER (nic.ru) на анкету ПАО МТС и отдать auth-код за 10 рабочих дней. Знали бы сразу — купили бы там. С reg.ru МТС домен не заберёт.</li>
+      <li class="item f">Ящик поддержки на домене клиенту нужен раньше сайта. Как только домен засветился, ставим на прод заглушку «Стартуем [дата]» с КВ.</li>
+      <li class="item f">Домен, back-домен, support@ и no-reply@ заранее отдаём клиенту для вайт-листов СБ. Иначе корпоративная сеть и почта МТС не пропустят сайт и письма.</li>
+    </ul></div>
+    <div class="card" id="start-team"><h3>Команда</h3><ul class="items">
+      <li class="item f">Юриста на правила акции бронируем сразу: <span class="yr y25">2025</span>он был свободен только через две недели. Копирайтера берём на все тексты, начиная с текстов в прототипе.</li>
+      <li class="item f">На каждую роль держим запасного исполнителя и обновляем базу подрядчиков: по ходу проекта кто-то может стать недоступен.</li>
+      <li class="item f">Цену с подрядчиком договариваем до начала работы, иначе итоговый счёт может сильно разойтись с ожиданиями.</li>
+      <li class="item f">Узнаём график подрядчиков. Фронт и бэк часто работают у нас вечерами и в выходные, а в будни у них основная работа. Доступность в день запуска и после него оговариваем заранее.</li>
+      <li class="item f">Проговариваем правила публикации: когда и где проект можно показывать. <span class="yr y25">2025</span>Макеты проекта оказались в открытом доступе ещё во время работы и в поиске стояли выше статей о самом проекте.</li>
+      <li class="item f">Доступ к репозиторию держим у агентства на случай, если разработчик станет недоступен.</li>
+      <li class="item f">Не ставим команду на два проекта с пересекающимися дедлайнами. <span class="yr y26">2026</span>Параллельный проект забирал время в самые горячие дни.</li>
+    </ul></div>
+    <div class="card" id="start-agree"><h3>Договориться с клиентом на старте</h3><ul class="items">
+      <li class="item f"><b>Продвижение.</b> Какой бюджет и какой месседж приведут людей на платформу. <span class="yr y25">2025</span>На промо было около 180 тыс. ₽, и на 300 мест на ивенте откликнулись 16 человек. Трафик — это результат платформы, и спросят с нас.</li>
+      <li class="item f"><b>Коммуникации.</b> Какие письма, рассылки и анкеты будут и кто их делает. <span class="yr y24">2024</span>Коммуникацию убрали из сметы, а после запуска она понадобилась срочно.</li>
+      <li class="item f"><b>Отчёт.</b> Какие цифры клиент захочет в конце и как считаем каждую.</li>
+      <li class="item f"><b>Данные на регистрации.</b> Идём по <a href="#list-reg">типовому списку полей</a> и уточняем, что нужно для призов и логистики. Добавлять поля после старта — это правка правил и попап для уже зарегистрированных.</li>
+      <li class="item f"><b>Трансляция.</b> Будет ли она, кто её делает и где. Если будет — сразу заводим <a href="#off-stream">план трансляции</a>.</li>
+      <li class="item f"><b>Канал правок.</b> Где клиент оставляет комментарии (фигма, док) и кто у него принимает решения.</li>
+      <li class="item f"><b>Согласующие.</b> Кто у клиента ЛПР и чьё слово главное в споре менеджера и бренда. ЛПР показываем работу рано, пока ещё можно что-то поправить.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#phase-pre">Что делать до старта</a><a class="chip" href="#lists">Типовые списки</a><a class="chip" href="#legal-rules">Юрист и правила</a><a class="chip" href="#cl-start">Чек-лист старта</a></div>
+</section>
+
+<section class="sec" id="mechanics" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · механика</div>
+    <h2>Прототип, механика и ТЗ</h2>
+    <p class="sec-lead">Главный источник аврала во всех трёх проектах — механика, которую не описали до разработки. Поэтому у каждого проекта есть пилотный прототип с текстами и ТЗ, и они всегда совпадают.</p>
+  </div>
+  <div class="proto" id="mech-proto">
+    <h3>Пилотный прототип и ТЗ — обязательно</h3>
+    <p class="f" style="margin:0">Прототип — кликабельная модель всей платформы: экраны, переходы, модалки. На нём сразу пишутся предфинальные тексты, поэтому копирайт важен уже на этом этапе.</p>
+    <div class="pair">
+      <div class="box"><b>Прототип</b>Экраны и путь пользователя, все исходы и модалки, предфинальные тексты.</div>
+      <div class="sync" aria-hidden="true">⇄</div>
+      <div class="box"><b>ТЗ</b>Механика, баллы, роли, возрасты, даты, админка, письма. Может быть отдельной вкладкой прототипа.</div>
+    </div>
+    <ul class="items">
+      <li class="item f"><b>Всё, что есть в ТЗ, есть в прототипе, и наоборот.</b> Любое изменение вносим сразу в оба места.</li>
+      <li class="item f">Изменения помечаем, чтобы команда видела, что поменялось. <span class="yr y26">2026</span>Прототип, таблица дат, схема пути и дизайн расходились между собой, и расхождения находили уже в разработке.</li>
+      <li class="item f">Явно говорим команде, что прототип — источник правды для структуры и текстов, и где в нём возможны неточности. <span class="yr y26">2026</span>По прототипу строили буквально, и в дизайн попали служебная нумерация и выдуманное ИИ «время прохождения теста».</li>
+      <li class="item f">Всё, что в прототипе сгенерировал ИИ, вычитываем. Клиенту показываем только то, что внутри договорились делать. <span class="yr y26">2026</span>Блок «новости районов», появившийся в прототипе, ушёл в дизайн и к клиенту и стал лишней работой.</li>
+      <li class="item f">Прототип с заглушками вместо текстов клиенту не отдаём: он не отличит его от финала.</li>
+    </ul>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="mech-steps"><h3>Порядок работы</h3><ol class="steps">
+      <li class="f">Путь пользователя и структура — в Miro или сразу в прототипе. До показа клиенту прогоняем через разработчиков: вдруг напридумывали сложное.</li>
+      <li class="f">Собираем прототип с предфинальными текстами и ТЗ рядом. Копирайтер пишет тексты прямо в прототипе.</li>
+      <li class="f">ТЗ делим по блокам и проверяем чужими глазами: автору всё ясно, а у другого человека сразу появляются вопросы. ТЗ, написанное ИИ, человек вычитывает целиком. <span class="yr y26">2026</span>Одно такое ТЗ пришлось переписывать с нуля.</li>
+      <li class="f">Сложную механику решаем созвоном всех ролей, а не кусками в чате. После созвона сразу — письменное резюме с задачами по ролям: дизайн, бэк, фронт, контент. Итоги вносим в ТЗ и прототип.</li>
+      <li class="f">Новая механика по ходу проекта идёт так: описание в ТЗ и прототипе → бэк обновляет формат данных → только потом заводим контент. <span class="yr y26">2026</span>Этот шаг пропустили, новые поля появились в данных без согласования, и поддержку сделали под неверный формат.</li>
+    </ol></div>
+    <div class="card wide" id="mech-activity"><h3>Что описать для каждой активности</h3><ul class="items">
+      <li class="item f"><b>Шаги и экраны.</b> Что за чем идёт и куда ведёт каждая кнопка. <span class="yr y24">2024</span>«Продолжить путешествие» после игры вело в игру снова, а не на карту.</li>
+      <li class="item f"><b>Все исходы.</b> Победа, проигрыш, частично верно, кончились попытки, кончились уровни, ошибка, повторный вход после прохождения. На каждый исход — модалка и текст.</li>
+      <li class="item f"><b>Попытки и повторы.</b> Можно ли пройти ещё раз и какая попытка засчитывается. <span class="yr y26">2026</span>Это решали после запуска: повторное прохождение сбрасывало прогресс, и данные первой попытки у части людей потерялись.</li>
+      <li class="item f"><b>Баллы.</b> За что, сколько, бывают ли частичные и как они выглядят для пользователя. Начисления одной активности в истории — одной строкой, и пользователь видит, почему получил 30 из 50.</li>
+      <li class="item f"><b>Проверка ответа.</b> На фронте или на бэке, после каждого действия или по кнопке «Проверить». Это меняет и интерфейс, и начисление: если ошибка подсвечивается сразу, в итоге все проходят «правильно».</li>
+      <li class="item f"><b>Роли.</b> Кто проходит (ребёнок, родитель, вместе) и кому начисляем. Разделение на роли должны поддерживать дизайн, API и админка. <span class="yr y26">2026</span>Совместный квиз «15 вопросов ребёнку + 15 родителю» всплыл только после запуска.</li>
+      <li class="item f"><b>Возрасты.</b> Чем отличаются правила, контент и управление. Для фронта одна активность с тремя вариантами вёрстки — это три активности.</li>
+      <li class="item f"><b>Рейтинг.</b> Тай-брейк при равных баллах. <span class="yr y26">2026</span>Тай-брейк не описали, и у всех с равными баллами в рейтинге оказалось одно место.</li>
+      <li class="item f"><b>Хранение.</b> Что сохраняется на сервере, а что только в браузере. Лимит «прослушать аудио один раз» через браузер обходится с другого устройства.</li>
+      <li class="item f"><b>Контентные ограничения.</b> Количество вариантов (дизайн должен выдержать 2, 3 и 4), максимальный размер игрового поля, длина текстов, пропорции картинок. <span class="yr y26">2026</span>Поле 7×7 не влезло в мобилку.</li>
+      <li class="item f"><b>Обратная связь.</b> Текст и для верного, и для неверного ответа.</li>
+      <li class="item f"><b>Даты.</b> Когда активность открывается и закрывается, что видит пользователь до и после.</li>
+    </ul></div>
+    <div class="card" id="mech-points"><h3>Баллы: чем проще, тем лучше</h3><ul class="items">
+      <li class="item f">Одна логика во всех играх, разница только в базовом времени: «5 секунд = 5 баллов». Для калибровки засекаем, за сколько каждая игра проходится в спокойном темпе.</li>
+      <li class="item f">Матрицы вроде «50 / 25 / 0 в зависимости от возраста и числа ошибок» не делаем: одна простая и одинаковая логика подсчёта везде.</li>
+      <li class="item f">На старте решаем, где баллы за верные ответы, а где за факт прохождения. <span class="yr y26">2026</span>В итоге сделали так: самостоятельные задания ребёнка — за верные, совместные — фиксированные 30 баллов, родителю баллов нет.</li>
+      <li class="item f">Правило начисления не придумываем на ходу. Любое правило согласуем с клиентом и вносим в правила акции.</li>
+      <li class="item f">Пороги для розыгрышей проверяем на реалистичность с учётом закрытых активностей. <span class="yr y26">2026</span>Порог «100 баллов за игровую неделю» оказался недостижимым, снизили до 50.</li>
+      <li class="item f">После запуска экономику баллов не трогаем. Иначе переписываем правила, копирайт и максимальные суммы.</li>
+    </ul></div>
+    <div class="card" id="mech-abuse"><h3>Защита от абьюза</h3><ul class="items">
+      <li class="item f">Проверяем механику вопросом «как это сломать». <span class="yr y25">2025</span>В тесте с несколькими верными ответами можно было отметить все варианты и получить максимум. Тип вопроса (один ответ или несколько) задаём явно.</li>
+      <li class="item f">Фейковые аккаунты подсматривают ответы. Квиз на баллы проходится один раз, в цепочке заданий верность ответа не показываем.</li>
+      <li class="item f">Мультиаккаунты ради призов отсекаем подтверждением почты кодом и проверкой топа перед розыгрышем.</li>
+      <li class="item f">Игры проверяем на предсказуемость. <span class="yr y26">2026</span>Монетки в игре выпадали в одной и той же последовательности.</li>
+      <li class="item f">Варианты ответов перемешиваем, иначе все верные оказываются первыми. Но проверка должна учитывать перемешивание: <span class="yr y26">2026</span>тест из-за этого выдавал чужой результат.</li>
+      <li class="item f">Ограничиваем ввод. <span class="yr y24">2024</span>В поле «цифра от 1 до 3» вводили 26.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#prevent">Как исключить это логикой</a></div></div>
+    <div class="card wide" id="mech-unify"><h3>Унификация</h3><ul class="items">
+      <li class="item f">Механика одна, усложняем контентом. Принцип «элемент А соответствует элементу Б» одинаково работает для текста, картинки и аудио. Разное перетаскивание для каждого возраста — это разная вёрстка и проверка.</li>
+      <li class="item f">Механика игры постоянная, меняется оформление: робот собирает посылки, на следующей неделе объезжает клумбы. Это дешево и не ломает бэк.</li>
+      <li class="item f">Одна механика — один формат данных, эталонный пример и описание API. Деление по возрастам везде устроено одинаково. <span class="yr y26">2026</span>Из-за разных форматов активности одного типа нельзя было делать по образцу друг друга.</li>
+      <li class="item f">Для сложных механик бэк пишет короткую инструкцию по запросам для фронта. <span class="yr y26">2026</span>Такую инструкцию отдавали ИИ-ассистенту вместе с задачей, и это ускоряло вёрстку.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#prevent">Исключаем логикой</a><a class="chip" href="#texts-copy">Копирайт</a><a class="chip" href="#legal-rules">Правила акции</a><a class="chip" href="#design-mockups">Что в макетах</a><a class="chip" href="#cl-design">Чек-лист перед дизайном</a></div>
+</section>
+
+<section class="sec" id="prevent" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · механика</div>
+    <h2>Исключаем логикой, а не проверяем</h2>
+    <p class="sec-lead">Лучше сделать проблему невозможной, чем ловить её проверкой в последний день. При описании механики проходим эту таблицу и решаем, что закрываем в логике, а что остаётся на проверку.</p>
+  </div>
+  <div class="legend" style="margin-top:16px"><span><span class="idea">идея</span>предложение на подумать — в прошлых проектах такого решения не было</span></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%">Риск</th><th style="width:26%">Где уже было</th><th>Как исключаем</th></tr></thead>
+    <tbody>
+      <tr class="f"><td>Мультиаккаунты ради призов</td><td><span class="yr y24">2024</span>победитель играл с двух аккаунтов</td><td>Почта подтверждается кодом; в проектах для сотрудников — белый список корпоративных доменов; «один человек — один приз» в правилах.<br><span class="idea">идея</span>Разыгрывать среди всех, кто набрал порог, тогда фармить топ вторым аккаунтом бессмысленно.</td></tr>
+      <tr class="f"><td>Фейковый аккаунт, чтобы подсмотреть ответы</td><td><span class="yr y26">2026</span>из-за этого закрыли повторное прохождение квизов</td><td>Верный ответ не отдаём на фронт до ответа, проверка на бэке; квиз на баллы — один раз.<br><span class="idea">идея</span>Вопросы из пула в случайном порядке, чтобы у двух аккаунтов наборы не совпадали.</td></tr>
+      <tr class="f"><td>«Отметь все варианты» в тесте</td><td><span class="yr y25">2025</span>так получали максимум или «частично верно»</td><td>Тип вопроса задаётся явно, лишний выбор = неверный ответ. Вариант проще: везде один верный ответ.</td></tr>
+      <tr class="f"><td>Повтор сбрасывает прогресс и баллы</td><td><span class="yr y26">2026</span>данные первой попытки потерялись</td><td>Засчитывается только первая попытка, повтор без баллов и без перезаписи результата.</td></tr>
+      <tr class="f"><td>Предсказуемая игра</td><td><span class="yr y26">2026</span>монетки выпадали в одной последовательности</td><td><span class="idea">идея</span>Случайная раскладка на каждую попытку — требование в ТЗ игры.</td></tr>
+      <tr class="f"><td>Равные баллы в рейтинге</td><td><span class="yr y24">2024</span><span class="yr y26">2026</span>тай-брейк дорешивали на ходу</td><td>Тай-брейк в правилах и в коде до запуска.</td></tr>
+      <tr class="f"><td>Регионы в неравном положении</td><td><span class="yr y26">2026</span>задания открывались по Москве</td><td>Открытие утром по Москве.<br><span class="idea">идея</span>Баллы не зависят от того, кто первым открыл задание.</td></tr>
+      <tr class="f"><td>Мат и оскорбления в никах</td><td><span class="yr y24">2024</span><span class="yr y26">2026</span></td><td>Фильтр по полным словоформам и модерация в админке.<br><span class="idea">идея</span>Для детей — ник из готовых вариантов вместо свободного ввода.</td></tr>
+      <tr class="f"><td>Неприемлемое в публичной галерее</td><td><span class="yr y26">2026</span>работы удаляли после публикации</td><td>Правила в промпте, лимит символов в подписях.<br><span class="idea">идея</span>Работа попадает в галерею после модерации, а не сразу.</td></tr>
+      <tr class="f"><td>Неверный возраст или регион на регистрации</td><td><span class="yr y24">2024</span>возраст стоял по умолчанию; <span class="yr y24">2024</span><span class="yr y25">2025</span>не тот регион</td><td>Никаких значений по умолчанию, выбор обязателен; регион — по месту жительства, и формулировка поля это говорит.</td></tr>
+      <tr class="f"><td>Дубли анкет и двойные письма</td><td><span class="yr y24">2024</span>256 дублей анкет; <span class="yr y25">2025</span>по два письма</td><td>Анкета внутри личного кабинета, одна на участника; массовая отправка защищена от повтора.</td></tr>
+      <tr class="f"><td>Кнопки в письме нажимаются сами</td><td>Прошлый проект: автоматом ставилось «не еду»</td><td>Любое действие — только на сайте после входа.</td></tr>
+      <tr class="f"><td>Слоты, на которые нельзя записаться</td><td><span class="yr y25">2025</span>сгорели 20 слотов из 34</td><td>Запись закрывается автоматически за N часов.<br><span class="idea">идея</span>Слоты, на которые уже нельзя записаться, система не публикует вообще.</td></tr>
+      <tr class="f"><td>Эксперт не знает о записи или отмене</td><td><span class="yr y25">2025</span>эксперты пропускали свои слоты</td><td>Уведомления и напоминания обеим сторонам автоматически.</td></tr>
+      <tr class="f"><td>Тестовые аккаунты в статистике и розыгрышах</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span>исключали вручную</td><td><span class="idea">идея</span>Флаг «тестовый» в админке; такие аккаунты сами выпадают из рейтинга, выгрузок и розыгрышей.</td></tr>
+      <tr class="f"><td>Активность открылась раньше срока</td><td><span class="yr y26">2026</span></td><td><span class="idea">идея</span>В админке список «что откроется в ближайшие дни», его проверяет второй человек перед каждой волной.</td></tr>
+      <tr class="f"><td>Настройки сбрасываются при деплое</td><td><span class="yr y26">2026</span></td><td>Финальные конфиги зашиваются в код.</td></tr>
+      <tr class="f"><td>Зависшая генерация блокирует задание</td><td><span class="yr y26">2026</span></td><td><span class="idea">идея</span>Тайм-аут — зависшая попытка сама сбрасывается и возвращается пользователю.</td></tr>
+      <tr class="f"><td>Расход на ИИ выходит из-под контроля</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Лимит запросов на пользователя.<br><span class="idea">идея</span>Общий лимит бюджета с уведомлением ответственному.</td></tr>
+      <tr class="f"><td>Ручные рассылки, которые не предусмотрели</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span></td><td>Варианты рассылок продумываем на старте, в админке — отправка по сегментам.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#mech-abuse">Защита от абьюза</a><a class="chip" href="#admin-panel">Админка</a><a class="chip" href="#off-draw">Розыгрыш</a><a class="chip" href="#tech-ai">ИИ-сервисы</a></div>
+</section>
+
+<section class="sec" id="admin" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · механика и дизайн</div>
+    <h2>Админка, данные и аналитика</h2>
+    <p class="sec-lead">Админку и отчётность описываем в ТЗ наравне с фронтом. Всё, что тут забыли, потом делали руками часами или не смогли сделать вообще.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="admin-panel"><h3>Админка</h3><ul class="items">
+      <li class="item f"><b>Работа с пользователями.</b> Править возраст, имя, регион и почту, удалять аккаунт со всеми связями и дополнительным подтверждением. Это типовые обращения в поддержку: «указал не тот возраст», «опечатка в почте».</li>
+      <li class="item f"><b>Модерация.</b> Редактирование и блокировка ников, удаление пользовательских работ из галереи.</li>
+      <li class="item f"><b>Контент.</b> Даты открытия и закрытия, статусы «черновик / опубликовано», логика обновления по дням или уровням. Для теста — сброс прогресса.</li>
+      <li class="item f"><b>Логи действий.</b> <span class="yr y25">2025</span>Из админки пропала запись на собеседование, и нельзя было понять, когда и как её удалили.</li>
+      <li class="item f"><b>Роли доступа.</b> Если в проекте есть эксперты (HR, психологи, ведущие), на старте решаем, что они видят и какие уведомления получают.</li>
+      <li class="item f"><b>Защита массовых действий.</b> Кнопка массовой рассылки не должна срабатывать дважды. <span class="yr y25">2025</span>Админка зависла, страница перезагрузилась, и люди получили по два письма.</li>
+      <li class="item f"><b>Памятка по админке.</b> Просим у разработчиков описание: как завести новость, что меняет каждая настройка. <span class="yr y26">2026</span>Поле «для кого» меняло логику начисления баллов, и об этом не знали те, кто его переключал. Памятки лежат в одном месте.</li>
+      <li class="item f"><b>Превью в админке — не сайт.</b> Результат проверяем только на сайте.</li>
+      <li class="item f"><b>Настройки переживают деплой.</b> <span class="yr y26">2026</span>После каждого деплоя конфиги активностей сбрасывались к дефолтам. Финальные конфиги отдаём бэкендеру, чтобы он зашил их в код, и храним копии в общей папке.</li>
+      <li class="item f"><b>Коды и названия активностей</b> фиксируем до заведения: потом их может быть нельзя поменять.</li>
+    </ul></div>
+    <div class="card" id="admin-export"><h3>Выгрузка и отчёты</h3><ul class="items">
+      <li class="item f"><b>Всё о пользователе выгружается.</b> Любые данные, связанные с участником, доступны к выгрузке: поля регистрации, баллы, прохождения, записи, статусы, письма. Разные выгрузки под каждую задачу обычно не нужны: достаточно одной полной, а нужное вычленяем в Excel.</li>
+      <li class="item f">Чего нет в выгрузке, то потом считают руками. <span class="yr y24">2024</span>Долю сотрудников МТС среди игроков считали по домену почты вручную. <span class="yr y25">2025</span>Статус «иду» не попадал в общую выгрузку, и таблицы сводили вручную каждый день.</li>
+      <li class="item f">Список отчётных метрик согласуем заранее, вместе с определениями. <span class="yr y24">2024</span>Клиент в конце попросил: сколько детей играли, сколько игр сыграно, самая популярная игра, топ городов, охват. И сразу вопрос: популярность — это входы, победы или попытки?</li>
+      <li class="item f">Считаем и уникальных игроков, и число прохождений по каждой активности. Для активностей с записью — «записей / состоялось».</li>
+      <li class="item f">«За сегодня» — это календарный день по Москве. <span class="yr y25">2025</span>Статистика считала последние 24 часа в UTC, и из-за этого делали неверные выводы. Если цифра непонятна — разбираемся до конца и объясняем.</li>
+      <li class="item f">Выгрузки клиенту отдаём файлами: сотрудники МТС не могут пользоваться Google-таблицами. Внутренняя таблица с заметками и клиентская — разные файлы.</li>
+      <li class="item f">Перед отправкой клиенту сверяем выгрузку с админкой. <span class="yr y25">2025</span>Слетела формула, и в ежедневном отчёте «иду» стало 14 вместо 25.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#list-export">Поля полной выгрузки</a></div></div>
+    <div class="card" id="admin-metrics"><h3>Метрика и пиксели</h3><ul class="items">
+      <li class="item f">Цели метрики закладываем до запуска и вешаем на все точки входа в регистрацию. <span class="yr y25">2025</span>Цель «клик по кнопке регистрации» показывала меньше регистраций, чем было: регистрировались из нескольких мест.</li>
+      <li class="item f">Клиенту объясняем, что метрика (события на фронте) и статистика админки (данные бэка) — разные вещи и не совпадут.</li>
+      <li class="item f">Доступ к метрике даём по логину Яндекса клиента, а не паролем от своей почты. Цели, созданные таргетологом клиента, сами не переименовываем.</li>
+      <li class="item f">Закладываем часы фронта на аналитику по ходу проекта: таргетолог клиента добавляет события и пиксели уже после старта.</li>
+    </ul></div>
+    <div class="card wide" id="admin-store"><h3>Что храним</h3><ul class="items">
+      <li class="item f">На старте решаем, какие данные сохраняем, сколько храним и что отдаём клиенту в конце. <span class="yr y25">2025</span>Через месяц после закрытия клиент попросил архив резюме с правками ИИ, а ответы ИИ не сохранялись вообще.</li>
+      <li class="item f">Логируем успешные отправки писем, а не только ошибки. <span class="yr y25">2025</span>Нужно было доказать, что письмо о записи уходило, а доказать было нечем.</li>
+      <li class="item f">Данные, которые убираем с сайта, сохраняем в бэкапе — на случай вопроса «почему меня не добавили».</li>
+      <li class="item f">Тестовые аккаунты команды и клиента помечаем сразу. Их надо исключать из статистики и розыгрышей, а на проде их бывает сотня.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#ops-support">Поддержка</a><a class="chip" href="#closing">Финальная выгрузка</a><a class="chip" href="#off-draw">Розыгрыш</a><a class="chip" href="#list-export">Типовой состав выгрузки</a></div>
+</section>
+
+<section class="sec" id="design" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · дизайн</div>
+    <h2>Дизайн и бренд МТС</h2>
+    <p class="sec-lead">Бренд МТС смотрит каждый макет, и любое отступление от гайдов стоит лишнего круга. Поэтому делаем только то, что можно сделать по гайдам, и показываем клиенту только приведённое к ним.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="design-brand"><h3>Что уже говорил бренд МТС</h3><ul class="items">
+      <li class="item f">Собираем из стандартных компонентов UI-kit: блоки, кнопки, плашки, хедер. Для спецпроектов берём правила спецпроектов, а не основной сайт: <span class="yr y25">2025</span>серый фон со страницы тарифов бренд завернул.</li>
+      <li class="item f">Требования меняются от проекта к проекту, поэтому уточняем их на старте. <span class="yr y25">2025</span>На сером не верстаем — либо градиент, либо белый. <span class="yr y26">2026</span>Либо яркий фон и спокойные кнопки, либо серый фон и цвета гайда на кнопках.</li>
+      <li class="item f">Шрифты MTS Wide, Compact и Text распределяем заранее и фиксируем. <span class="yr y25">2025</span>Бренд просил Wide и Text без Compact и без болда на кнопках. <span class="yr y26">2026</span>Решили так: Wide — заголовки и кнопки, Compact — текст.</li>
+      <li class="item f">Цвет текста — чёрный, графитовый или красный. Синий не используем, ссылки тоже не синие. Обводки в тон или чёрные.</li>
+      <li class="item f">Лого МТС — минимум: главная и регистрация, не как элемент композиции. Так проще согласовать. Но без лого пропадает ссылка на главную, и нужна другая навигация: крошки или «назад».</li>
+      <li class="item f">Круглых кнопок у МТС нет, только скругление. Кнопки и стрелки унифицируем. 3D — из одного пака и без избытка. 2D-графика — на однотонном фоне.</li>
+      <li class="item f">Гайды МТС статичные, так что допустимость анимаций уточняем у бренда отдельно.</li>
+      <li class="item f">Компоненты прошлых проектов переносим осторожно. <span class="yr y25">2025</span>Стрелку из Кодиленда бренд не пропустил.</li>
+      <li class="item f">КВ делаем ровно так, как согласовано: шрифт, капс, тени.</li>
+    </ul></div>
+    <div class="card" id="design-comments"><h3>Как работать с комментариями бренда</h3><ul class="items">
+      <li class="item f">Сначала выясняем, кто прав: бренд или мы. И на основе чего макет сделан именно так.</li>
+      <li class="item f">Если комментарии менеджера и дизайнера бренда противоречат друг другу, выясняем, чьё слово главное.</li>
+      <li class="item f">Задаём конкретный вопрос: что именно не по гайдам — текстуры, цвета? Спорим со ссылкой на фрейм гайда, а не словами.</li>
+      <li class="item f">Если не делаем ровно как в комментарии, объясняем почему: этого нет в гайдах или это ломает логику.</li>
+    </ul></div>
+    <div class="card" id="design-figma"><h3>Фигма</h3><ul class="items">
+      <li class="item f">Клиентская фигма — отдельный файл без черновиков и наших комментариев, под нашим контролем. Туда складываем всё, что клиенту нужно согласовать, с понятной структурой и текстами рядом с макетами.</li>
+      <li class="item f">Дизайн делается на компонентах с постоянными отступами и скруглениями. Иначе его не сверстать быстро и не отдать ИИ-ассистенту. Фигма иногда сама сдвигает отступы — перепроверяем.</li>
+      <li class="item f">На каждый комментарий дизайнер отвечает «сделано» и сам проходит по всем комментариям до сдачи. Перед отправкой клиенту PM перепроверяет апдейт. Отработанные комментарии убираем.</li>
+      <li class="item f">Правки клиента вносятся только после ОК от PM или аккаунта. Старые комментарии не вносим, если новые могли их отменить: сначала синк, потом бриф.</li>
+      <li class="item f">Дизайнера тегаем только там, где точно нужно править. В общей фигме не включаем Spotlight — он тащит всех за твоим экраном.</li>
+    </ul></div>
+    <div class="card wide" id="design-mockups"><h3>Что должно быть в макетах</h3><ul class="items">
+      <li class="item f"><b>Все состояния.</b> Ховер, выбрано, верно и неверно после проверки, «откроется [дата]», «завершено», загрузка, ошибка, пустое состояние, «все слоты заняты». <span class="yr y26">2026</span>Этот список понадобился фронту по каждому блоку.</li>
+      <li class="item f"><b>Все модалки.</b> Регистрация, вход, «забыл пароль» и добавление ребёнка нужны фронту в первую очередь. Правила каждой игры — модалкой перед стартом.</li>
+      <li class="item f"><b>Предфинальные тексты из прототипа.</b> Перед показом клиенту на макете стоит согласованный текст. Тогда клиент комментирует предметно. <span class="yr y25">2025</span>Устаревшие тексты убрали из макета, и клиент увидел lorem ipsum.</li>
+      <li class="item f"><b>Шаблон письма.</b> Дизайн письма делаем вместе с предфинальным дизайном сайта, чтобы сразу его сверстать.</li>
+      <li class="item f"><b>Мобилка первой.</b> <span class="yr y25">2025</span>С мобильных пришло 60% переходов и 46% регистраций. Макеты рисуем в реальных пропорциях, с учётом строки браузера. <span class="yr y26">2026</span>Игра из макета на реальном телефоне оказалась неиграбельной.</li>
+      <li class="item f"><b>Консистентность.</b> В однотипных блоках одинаковые кнопки, иерархия заголовков одна на всех страницах. Однотипные активности выглядят одинаково. <span class="yr y26">2026</span>Однотипные активности в макетах отличались, и каждую приходилось верстать отдельно.</li>
+      <li class="item f"><b>Механика считывается с экрана.</b> Дизайнер понимает, как работает игра. <span class="yr y26">2026</span>В игре «поймай яйца» корзина на макете всегда стояла в одном положении, и это ломало смысл.</li>
+      <li class="item f"><b>Проверка на машинах клиента.</b> На корпоративных компьютерах МТС шрифт отображал «С» как «О».</li>
+    </ul></div>
+    <div class="card" id="design-assets"><h3>Ассеты</h3><ul class="items">
+      <li class="item f">ТЗ на ассеты: перечень объектов, формат, размер, референс. Объём согласуем с исполнителями до производства: <span class="yr y26">2026</span>три раскраски вместо одной утроили работу фронта.</li>
+      <li class="item f">Единые пропорции: <span class="yr y26">2026</span>все картинки квизов сделали 1:1. Для галерей — один ракурс и размер.</li>
+      <li class="item f">Технические требования уточняем у фронта до отрисовки: webp ×2, экспорт без скруглений, раскраски только в SVG, где каждая заливаемая часть — отдельный замкнутый контур.</li>
+      <li class="item f">Иллюстрации к заданиям должны считываться однозначно, иначе подписываем. Удобнее переиспользовать вектор прошлых проектов или править стоки, чем рисовать с нуля.</li>
+      <li class="item f">Не всё выразимо в гайдах: <span class="yr y26">2026</span>маскоты без бровей не могли показать гнев или стыд. Реализуемость проверяем до того, как идея уйдёт клиенту.</li>
+      <li class="item f">Исходники всегда забираем в папку проекта.</li>
+    </ul></div>
+    <div class="card" id="design-a11y"><h3>Доступность</h3><ul class="items">
+      <li class="item f">Если в проекте доступность, стандарты a11y.mts.ru отдаём разработчикам в первый же день. Отдельная версия для слабовидящих — это почти второй фронт, и оценивать её надо сразу.</li>
+      <li class="item f">Проверяем контраст: белый текст на светлом градиенте не читается. Субтитры на видео — на подложке.</li>
+      <li class="item f">Каждое действие даёт текстовую и озвучиваемую обратную связь. <span class="yr y25">2025</span>Незрячий пользователь не смог перевернуть карточки с клавиатуры, не понял, загрузилось ли резюме, и потерял навигацию в видеоплеере.</li>
+      <li class="item f">До запуска тестируем со скринридером и по возможности с реальными пользователями.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#rules">Правило 04: обещанное не выкидываем</a></div></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#start-ask">Запросить гайды</a><a class="chip" href="#mech-proto">Тексты из прототипа</a><a class="chip" href="#client-approve">Согласования</a><a class="chip" href="#cl-show">Чек-лист перед показом</a></div>
+</section>
+
+<section class="sec" id="texts" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · прототип и производство</div>
+    <h2>Тексты и контент</h2>
+    <p class="sec-lead">Текстов на платформе всегда в несколько раз больше, чем кажется на старте. Поэтому копирайт начинается уже в прототипе, а не после дизайна.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="texts-copy"><h3>Копирайт</h3><ul class="items">
+      <li class="item f"><b>Предфинальные тексты пишем сразу в прототипе.</b> Дизайн, вёрстка и админка берут тексты оттуда.</li>
+      <li class="item f">Копирайтер отвечает за все тексты: модалки, ошибки, письма (включая восстановление пароля), правила, FAQ, заглушки, призы, рейтинг. Сразу даём ему полный перечень и дедлайны, короткие тексты тоже закладываем с запасом.</li>
+      <li class="item f">Клиент видит тексты до вёрстки. <span class="yr y24">2024</span>Клиент впервые прочитал тексты уже на живом сайте.</li>
+      <li class="item f">Все тексты живут в одном месте: в прототипе или в одном доке. <span class="yr y25">2025</span>Две таблицы (для вёрстки и общая) разошлись, и на сайт уехали старые версии с опечатками. Тексты на сайте сверяем с последней версией.</li>
+      <li class="item f">Клиент правит в доке, а не в чате и не скринами с телефона.</li>
+      <li class="item f">Рыба и выдумки ИИ не доезжают до сайта. <span class="yr y26">2026</span>Тексты-заглушки в макетах было не отличить от реальных, и случайное слово из макета попало в финальные тексты.</li>
+      <li class="item f">Текст сверяем с реальной механикой и устройством. На сайт чуть не ушли обещание предпросмотра, которого нет, и «в окошке справа» для мобилки, где никакого окошка справа нет.</li>
+      <li class="item f">Пишем просто. Правила игры не начинаются со «здесь можно» и не состоят из лозунгов. Нужно так: «Нарисуй картинку или раскрась готовую. Затем выбери дом…».</li>
+      <li class="item f">Лимиты длины задаём заранее: <span class="yr y26">2026</span>описание карточки — до 3 строк, заголовок — до 2. Проверяем переносы брендовых названий в узких блоках.</li>
+      <li class="item f">Сроки в текстах пишем конкретно: «придёт на почту в течение …», «10:00 (по московскому времени)». Иначе люди пишут в поддержку или приходят не вовремя.</li>
+      <li class="item f">Пользователю не врём. Если в правилах написано «снимем баллы за неявку», то снимаем. Припугнуть и не сделать нельзя.</li>
+    </ul></div>
+    <div class="card" id="texts-style"><h3>Стиль текстов для МТС</h3><ul class="items">
+      <li class="item f">«Ты» везде. <span class="yr y26">2026</span>В детском проекте «вы» было только в совместных заданиях для родителя и ребёнка.</li>
+      <li class="item f">Гендерно-нейтрально: не «ты заработал» и не «заработал(а)», а «твой результат — 96 баллов».</li>
+      <li class="item f">«МТС» — кириллицей. Названия вертикалей, продуктов и дочерних компаний — строго по эталонному списку клиента. Порядок вертикалей тоже задаёт клиент.</li>
+      <li class="item f">Одна сущность — одно название. <span class="yr y24">2024</span>В одном письме была «анкета», во втором «форма сопровождающего», и люди заполняли дважды. Термины берём у клиента: «баллы», а не «очки»; «квизы» или «тесты»; «марафон» или «акция».</li>
+      <li class="item f">Буква ё, без висящих предлогов. Файлы для скачивания называем по-русски.</li>
+      <li class="item f"><b>Что МТС заворачивал:</b> англицизмы (CV), «битва» и «баттл», чужие бренды (Netflix, Spotify), «работа мечты» и «оффер мечты», «амбассадор», названия своих же внутренних программ не по назначению.</li>
+      <li class="item f">Тон зависит от проекта: карьерный формальнее детского, «миры и путешествия» туда не подходят. Учитываем ЦА: родители-сотрудники бывают разного возраста.</li>
+      <li class="item f">Для доступности: короткие фразы, конкретные кнопки вместо «Подробнее», раздел называем по функции. С редактурой клиента по мелочам не спорим.</li>
+    </ul></div>
+    <div class="card" id="texts-naming"><h3>Нейминг</h3><ul class="items">
+      <li class="item f">Названия разделов и активностей утверждаем на старте. <span class="yr y26">2026</span>Переименование всех разделов за два дня до запуска вызвало переделку каждой страницы и клиентской фигмы. В мобильном меню название должно влезать в одно слово.</li>
+      <li class="item f">Рабочие названия помечаем как рабочие, иначе они зашиваются в тексты как финальные.</li>
+      <li class="item f">Возрастные группы фиксируем одним списком для всех материалов. Копирайтеру сразу даём термины структуры (раздел → блок → активность), иначе везде будет «раздел».</li>
+    </ul></div>
+    <div class="card wide" id="texts-games"><h3>Контент игр, тестов и квизов</h3><ul class="items">
+      <li class="item f">Все задания прорешиваем сами. У каждого есть объяснение, почему ответ верный.</li>
+      <li class="item f">Ловим двусмысленность и второе верное решение. <span class="yr y24">2024</span>В словесной игре было два правильных ответа, <span class="yr y26">2026</span>а в квизе вариант «искали в интернете» был верным, но считался ошибкой. В квизе на баллы это особенно больно.</li>
+      <li class="item f">В словесных играх проверяем букву ё: «полёт» не собирается из слова без ё.</li>
+      <li class="item f">Сложный предметный контент отдаём эксперту. Ответ — строкой или числом для автопроверки. Готовые задачи гуглятся, их условия переписываем.</li>
+      <li class="item f">Контент клиента фактчекаем и возвращаем ему комментариями. <span class="yr y25">2025</span>В тестах клиента были устаревшие факты и ответы, противоречащие первой выдаче поиска.</li>
+      <li class="item f">Чувствительные для клиента факты обходим. Лучше на один вопрос меньше.</li>
+      <li class="item f">Объём соизмеряем с пользователем. 17 карточек советов — это много, 8–10 — нормально.</li>
+      <li class="item f">Клиенту, который сам даёт контент, даём спецификацию и срок. <span class="yr y25">2025</span>Пример для теста: 7–15 вопросов, вопрос до 300 знаков, 2–4 варианта до 45 знаков, картинки по желанию.</li>
+      <li class="item f">Для клиента и поддержки готовим файл с правильными ответами.</li>
+      <li class="item f">Для тестов «кто ты» задаём правило на случай равенства результатов.</li>
+      <li class="item f">Материалы клиента собираем в одно место с реестром: кто, что, когда. Фото просим оригиналами, а не сжатыми через Telegram. Для недостающего делаем таблицу «кого и чего не хватает» с дедлайном.</li>
+    </ul></div>
+    <div class="card wide" id="texts-admin"><h3>Наполнение админки</h3><ul class="items">
+      <li class="item f">Это отдельная задача с ответственным и временем в плане. Контент заливается дважды, на тест и на прод, а файлы между ними не переносятся. По отдельности каждая заливка быстрая, а в сумме выходит много.</li>
+      <li class="item f">Один ответственный и понятный порядок. <span class="yr y26">2026</span>Админку заполняли несколько человек, и однажды описания активностей оказались стёрты — когда и как, так и не выяснили.</li>
+      <li class="item f">Для рутины можно нанять отдельного человека, но за ним всё равно проверяем. Задача на наполнение говорит, откуда брать тексты (из прототипа) и картинки.</li>
+      <li class="item f">Фронту для вёрстки нужен реальный контент максимальной длины для каждого возраста, а не один вопрос на пробу.</li>
+      <li class="item f">Контент на день запуска и на все следующие релизы (новости, статьи, уровни) готовим заранее, а не накануне выхода.</li>
+      <li class="item f">После заливки проверяем статус «опубликовано», даты, возрастные группы и баллы — и смотрим результат на сайте.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#mech-proto">Прототип и ТЗ</a><a class="chip" href="#admin-panel">Админка</a><a class="chip" href="#ops-waves">Релизы волн</a><a class="chip" href="#legal-short">Короткие правила</a></div>
+</section>
+
+<section class="sec" id="legal" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · механика и производство</div>
+    <h2>Юридическое: правила акции, персональные данные, призы</h2>
+    <p class="sec-lead">Правила акции стоят на критическом пути: без них клиент не может даже сделать свою презентацию. А юрист не напишет их, пока механика и призы не описаны.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="legal-rules"><h3>Правила акции</h3><ul class="items">
+      <li class="item f">Юристу сразу отдаём полное описание файлом: возрастные группы, активности с рабочими названиями, начисление баллов, призы и их стоимость, организатор и его реквизиты. Отдельно — будет ли съёмка на мероприятии и есть ли среди участников несовершеннолетние.</li>
+      <li class="item f">Юрист делает драфт за 2–3 дня, но у него всегда есть вопросы по механике, и срок зависит от того, как быстро мы отвечаем. Держим список юристов и запасного.</li>
+      <li class="item f">Правила описывают всю механику, включая рандомайзер, даже если клиент не хочет его «светить». В них есть все даты розыгрышей и объявления результатов, тай-брейк и критерии на случай, если задание никто не решил полностью.</li>
+      <li class="item f">Ограничения прописываем явно: «один человек — один подарок», порядок розыгрышей, кто исключается из следующих тиражей. Количество призов сводим в одну таблицу, чтобы не путаться.</li>
+      <li class="item f">Формулировки совпадают с тем, что видит пользователь. <span class="yr y26">2026</span>В правилах было «из числа первых 20 участников рейтинга», а в текущем рейтинге победители стояли на 87–102 местах. Пользователи сразу написали в поддержку.</li>
+      <li class="item f">Один документ и один держатель пера. Если юристы клиента правят в своём доке, мы параллельно у себя не правим.</li>
+      <li class="item f">После согласования правила меняются только через клиента и юристов. <span class="yr y25">2025</span>Даты в финальном документе поправили без юристов, и на сайте оказалась версия, которой не было у аккаунта. PDF на сайте сверяем с согласованным финалом.</li>
+      <li class="item f">Если клиент хочет поменять правила игры уже в ходе акции (раздать призы «по баллам» вместо рандома), сначала меняем юридический текст.</li>
+      <li class="item f">Договор с оператором акции подписываем до запуска.</li>
+      <li class="item f">Пункты о том, кто обрабатывает данные, читаем внимательно. <span class="yr y25">2025</span>Юристы МТС вписали, что МТС обрабатывает ПДн участников. Значит, мы их передаём, и встаёт вопрос регистрации оператором ПДн. Решение и риск фиксируем письменно.</li>
+    </ul></div>
+    <div class="card" id="legal-short"><h3>Короткие правила на сайте</h3><ul class="items">
+      <li class="item f">В них: даты проведения, возраст участников, график открытия блоков, даты розыгрышей, призы и пороги баллов, за что начисляются баллы, статусы, ссылка на полные правила.</li>
+      <li class="item f">Даты вычитываем отдельно. <span class="yr y25">2025</span>В коротких правилах стоял май вместо августа.</li>
+      <li class="item f">Даты розыгрышей пишем на сайте явно: «4 сентября — розыгрыш приглашений, 11 сентября — мерча». Между розыгрышами — не меньше недели.</li>
+      <li class="item f">Правила видны рядом с игровым полем и доступны потом. Иначе приходят вопросы, почему у одного участника баллов больше, чем у другого.</li>
+    </ul></div>
+    <div class="card" id="legal-pd"><h3>Персональные данные</h3><ul class="items">
+      <li class="item f">Согласие на обработку ПДн — обязательный пункт чек-листа, оформляем в PDF. <span class="yr y24">2024</span>Его забыли, и клиент доделывал сам.</li>
+      <li class="item f">Если участники — дети, согласие даёт законный представитель на свои данные и данные ребёнка. <span class="yr y24">2024</span>МТС поручал обработку оператору акции, и условия обработки прописывались в договоре между ними.</li>
+      <li class="item f">ФИО родителя — отдельными полями, это было юридическим требованием.</li>
+      <li class="item f">Данные о здоровье и инвалидности — особая категория, для неё нужно письменное согласие. <span class="yr y25">2025</span>Юрист запретил собирать их на сайте в любом виде: свободным полем, чекбоксом или селектом. Доводы юриста передали клиенту текстом.</li>
+      <li class="item f">Новое поле с персональными данными после старта, например телефон, тянет за собой правку правил.</li>
+      <li class="item f">Победителей публикуем только по нику или персональному коду. ФИО и почты отдаём клиенту отдельно.</li>
+      <li class="item f">Промпты пользователей для ИИ публично не показываем: мало ли что там напишут.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#list-reg">Типовые поля регистрации</a></div></div>
+    <div class="card wide" id="legal-prizes"><h3>Призы</h3><ul class="items">
+      <li class="item f">Призы уточняем до механики и правил, потому что механика привязана к ним. <span class="yr y24">2024</span>Призов к запуску так и не было. Запасной вариант клиента был таким: считать по максимальной стоимости и писать TBD.</li>
+      <li class="item f">Приз дороже 4000 ₽ всегда попадает в правила из-за НДФЛ. <span class="yr y25">2025</span>Все призы были дешевле, и пункт о сборе данных для вручения убрали. Налоговое агентирование — задача клиента или оператора.</li>
+      <li class="item f">Для промокодов юристу нужны размер скидки, где применять, срок действия, условия после срока и дисклеймеры.</li>
+      <li class="item f">Приз должен быть нужен ЦА. <span class="yr y24">2024</span>Поездка к президенту МТС ребёнка-победителя не обрадовала; лучше было сделать «планшет + поездка».</li>
+      <li class="item f">Сложность задания и ценность приза балансируем. <span class="yr y24">2024</span>Спецзадание-олимпиаду со слабым призом решили два человека: сложное задание либо поддерживаем дорогим призом, либо не делаем.</li>
+      <li class="item f">Если победителей будут обзванивать, телефон собираем с первого дня. <span class="yr y24">2024</span><span class="yr y25">2025</span>Оба раза об этом вспоминали в конце.</li>
+      <li class="item f">Доставка призов — не наша зона, если её нет в смете. <span class="yr y25">2025</span>Завели отдельный ящик для подарков и отдали его ивент-агентству, которое занималось доставкой.</li>
+      <li class="item f">Поздно добавленный приз тянет каскад правок: дизайн блока призов, копирайт в правилах и FAQ, юридические правила, механика розыгрыша, отдельное письмо. Собираем весь каскад в один список и отдаём одной пачкой.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#start-team">Бронь юриста</a><a class="chip" href="#mech-points">Баллы</a><a class="chip" href="#off-draw">Розыгрыш</a><a class="chip" href="#texts-copy">Копирайт</a></div>
+</section>
+
+<section class="sec" id="tech" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · старт и предзапуск</div>
+    <h2>Техника, письма и безопасность</h2>
+    <p class="sec-lead">Инфраструктура ломалась в самые неудобные моменты: в день запуска, перед релизом, под первой нагрузкой. Всё ниже проверяем заранее, а не в день старта.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="tech-hosting"><h3>Хостинг и окружения</h3><ul class="items">
+      <li class="item f">Хостинг проверяем до запуска: SMTP-порты, HTTPS, доступы для деплоя, фоновые обработчики. <span class="yr y25">2025</span>В день запуска хостер блокировал SMTP, и коды регистрации не приходили, а сайт показывал «страница не защищена». <span class="yr y26">2026</span>Деплой на прод падал с Permission denied.</li>
+      <li class="item f">Держим резервный стенд. <span class="yr y26">2026</span>Тестовый сервер лежал почти три дня перед запуском, а dev-сервер упал накануне выхода нового раздела.</li>
+      <li class="item f">Схема окружений (dev, test, prod) и их названия понятны всей команде. Иначе путаются, где тест, а где прод, и удаляют данные не там.</li>
+      <li class="item f">Тестовый сервер закрываем логином и паролем, чтобы клиент не увидел сырое.</li>
+      <li class="item f">Тестируем на тесте, а не на проде. База прода не сбрасывается, и тестовые пользователи там остаются навсегда. Файлы между тестом и продом не переносятся, ссылки на картинки в них разные.</li>
+      <li class="item f">Бот деплоя в чате пишет, что обновили и что проверить, или что сборка упала. <span class="yr y26">2026</span>Это сильно упростило приёмку.</li>
+      <li class="item f">Заранее задаём лимиты на размер файлов. Админка падала по тайм-ауту на больших картинках, а запись трансляции на 10 ГБ пришлось сжимать и дорабатывать хранение.</li>
+    </ul></div>
+    <div class="card" id="tech-mail"><h3>Письма</h3><ul class="items">
+      <li class="item f"><b>Шаблон письма — вместе с дизайном.</b> Как только есть хотя бы предфинальный дизайн, делаем и верстаем шаблон письма и сразу собираем на нём первые письма: код регистрации, сброс пароля.</li>
+      <li class="item f"><b>Варианты рассылок — на старте.</b> Сразу составляем список всех писем и рассылок, которые могут понадобиться, и закладываем их в админку с отправкой по сегментам. Тогда ничего не придётся рассылать вручную. <span class="yr y25">2025</span>Исключения из рассылки каждый день вручную вносили в код.</li>
+      <li class="item f">Все транзакционные письма нужны к запуску, это не «несрочное». <span class="yr y25">2025</span>Список: код регистрации, сброс пароля, анонсы активностей, запись и отмена записи, напоминания, победители, приглашение на ивент и напоминание перед ним.</li>
+      <li class="item f">Уведомления о записи, отмене и переносе получают обе стороны: и участник, и эксперт. Напоминание в день встречи — тоже обеим. <span class="yr y25">2025</span>Эксперты получали только письмо о записи и пропускали свои слоты.</li>
+      <li class="item f">Кнопки подтверждения ведут на сайт, в личный кабинет, после обычного входа. Почтовые клиенты сами прожимают ссылки в письмах: на прошлом проекте так автоматически нажималось «не еду». <span class="yr y25">2025</span>Одноразовые авторизационные ссылки не заработали.</li>
+      <li class="item f">Успешные отправки логируем или шлём через сервис с журналом доставки. Массовая рассылка защищена от повторной отправки.</li>
+      <li class="item f">После любой правки шаблона — тестовая отправка себе и сверка с макетом. <span class="yr y25">2025</span>После правки текста пропала картинка в шапке, а обращение снова стало «Привет, Имя Фамилия».</li>
+      <li class="item f">Для тестов на проде добавляем свои домены в разрешённые, чтобы пройти сценарий целиком и получить письмо.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#list-mail">Типовой список писем</a></div></div>
+    <div class="card" id="tech-reg"><h3>Регистрация и валидации</h3><ul class="items">
+      <li class="item f">Схема стандартная: вход, регистрация, «забыли пароль». Почту подтверждаем кодом — одной уникальности почты мало. Сразу решаем, как быть с несколькими детьми на одну почту.</li>
+      <li class="item f">Требование ИБ МТС, которое спрашивают каждый раз: подсказка «Пароль должен отличаться от пароля к учётной записи МТС».</li>
+      <li class="item f">Валидации с понятными ошибками по-русски: что не так и как исправить. <span class="yr y26">2026</span>Это были пароль без кириллицы, имя ребёнка по-русски и возраст цифрами.</li>
+      <li class="item f">Фильтр запрещённых слов строим по полным словоформам, а не по кускам слов и не по стемам. <span class="yr y26">2026</span>Фильтр не пропустил реальные фамилии участников. Фильтр тестируем на настоящих ФИО.</li>
+      <li class="item f">Белый список корпоративных доменов почты, если он есть, сверяем со всеми компаниями группы. <span class="yr y26">2026</span>Новые домены добавляли уже по ходу акции.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#list-reg">Типовые поля регистрации</a></div></div>
+    <div class="card" id="tech-sec"><h3>Безопасность МТС</h3><ul class="items">
+      <li class="item f">СБ и ИБ МТС смотрят платформу до запуска, и без их добра старт невозможен. Закладываем показ за 2–3 дня до старта. Если на проде ещё заглушка, делаем поддомен-копию прод-фронта с прод-бэком и закрываем там то, чего не должно быть в день запуска.</li>
+      <li class="item f">СБ проверяет с рабочих компьютеров МТС. Корпоративная сеть не открывает внешние сервисы вроде Google-форм, поэтому нужны вайт-листы или подсказка «если не открывается, открой с телефона».</li>
+      <li class="item f">Типовые опасения ИБ — доступ к данным участников без авторизации и внедрение зловредного кода. Если много кода написано с ИИ, делаем отдельную проверку безопасности.</li>
+      <li class="item f">Отчёт пентеста сначала проверяем на то, что он про наш продукт: <span class="yr y26">2026</span>прислали отчёт по чужому приложению. Дальше отвечаем по каждому пункту: «исправим» или «не критично, потому что…».</li>
+    </ul></div>
+    <div class="card wide" id="tech-ai"><h3>ИИ-сервисы</h3><ul class="items">
+      <li class="item f">Аккаунт сервиса регистрируем заранее: заявка может висеть на рассмотрении.</li>
+      <li class="item f">Лимит запросов на пользователя, иначе улетим в токены. <span class="yr y25">2025</span>Было 3 проверки резюме на человека.</li>
+      <li class="item f">Бюджет на API считаем заранее и назначаем ответственного за баланс. <span class="yr y26">2026</span>Баланс пополняли вручную, а расход оказался выше ожидаемого.</li>
+      <li class="item f">Зарубежные ИИ из России работают через прокси, и это точка отказа. <span class="yr y26">2026</span>В день запуска ИИ-активности прокси не выдержал, его переносили на другой сервер несколько часов, и открытие сдвинулось. До старта прогоняем нагрузочный тест.</li>
+      <li class="item f">Входные файлы тестируем через API на реальных примерах. <span class="yr y25">2025</span>ИИ нестабильно читал doc-файлы, и в итоге оставили только PDF.</li>
+      <li class="item f">Промпт — отдельная задача с ответственным. <span class="yr y26">2026</span>На прод ушёл тестовый промпт.</li>
+      <li class="item f">Модерацию пользовательского контента продумываем до старта. ИИ часть трэша отсекает сам, часть пропускает, в том числе политику и мат в рисунках. Нужны правила в промпте, ручная чистка галереи и правила для пользователей.</li>
+      <li class="item f">Интерфейс учитывает ожидание и сбои: генерация идёт до 5 минут, значит, нужен статус, текст ошибки и повторная попытка. Зависшая задача не должна навсегда блокировать следующий шаг. Рядом с результатом — дисклеймер «ИИ может ошибаться».</li>
+      <li class="item f">Ассеты, сгенерированные ИИ, просматриваем глазами: <span class="yr y26">2026</span>во всех домах из окон росли деревья.</li>
+    </ul></div>
+    <div class="card wide" id="tech-services"><h3>Сторонние сервисы</h3><ul class="items">
+      <li class="item f"><b>МТС Линк.</b> Встреча не стартует, пока её не запустит создатель. На одном аккаунте нельзя вести две встречи сразу, а предыдущая сама не завершается. <span class="yr y25">2025</span>Из-за этого сорвались три встречи. Тестируем за реального участника с перекрывающимися слотами, разводим встречи по аккаунтам. Зато в логах видно, кто на самом деле не пришёл.</li>
+      <li class="item f"><b>Трансляция.</b> Встраиваем чужой плеер, поэтому нужны документация, тестовый поток и прямая связь разработчика с подрядчиком. Подробный план — в разделе про офлайн. <a href="#off-stream">План трансляции</a></li>
+      <li class="item f"><b>Партнёрские интеграции.</b> Встраиваем чужую систему, только если у партнёра всё готово под встраивание. Иначе это доп.работы или отказ. Формат данных из внешних API согласуем с фронтом.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#phase-pre">Инфраструктура до старта</a><a class="chip" href="#launch-before">Запуск</a><a class="chip" href="#ops-mail">Рассылки</a><a class="chip" href="#cl-launch">Чек-лист перед запуском</a></div>
+</section>
+
+<section class="sec" id="testing" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · производство и предзапуск</div>
+    <h2>Тестирование и приёмка</h2>
+    <p class="sec-lead">Тест начинается с первых сборок, а не за день до запуска. Иначе все начинают тестировать одновременно в последний момент, и времени на исправления не остаётся.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="test-who"><h3>Кто и когда тестирует</h3><ul class="items">
+      <li class="item f">На проекте есть тестировщик. Он постоянно проходит на dev-сервере всё, что уже должно работать, и заводит задачи на то, что не работает.</li>
+      <li class="item f">Сначала внутренний тест, потом клиентский. Клиенту даём дату и список того, что можно смотреть, а что ещё вносится. На тест клиенту закладываем неделю.</li>
+      <li class="item f">Разработчики заранее знают дату и время показа клиенту и говорят, что ещё не доделано и смотреть не нужно.</li>
+      <li class="item f">Приёмку делает не исполнитель. В трекере у колонки «Тестирование» есть хозяин.</li>
+    </ul></div>
+    <div class="card" id="test-regress"><h3>Регрессия и кэш</h3><ul class="items">
+      <li class="item f">После каждого деплоя прогоняем ключевые сценарии: регистрация, вход, прохождение, начисление, запись, письма. <span class="yr y25">2025</span>Исправление отображения слотов сломало кнопку записи, и два дня этого никто не замечал, пока не нашёл эксперт МТС.</li>
+      <li class="item f">Перед отправкой скринов клиенту чистим кэш. Клиенту даём инструкцию по очистке кэша. Для Safari на iOS это «Настройки → Safari → Дополнительные → Данные сайтов → Удалить все данные».</li>
+      <li class="item f">Если клиент нашёл баг, просим скринкаст воспроизведения и устройство.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#team-bug">Шаблон баг-репорта</a></div></div>
+    <div class="card wide" id="test-what"><h3>Что проверяем</h3><ul class="items">
+      <li class="item f"><b>Сборку против прототипа и ТЗ.</b> Всё, что есть в прототипе и ТЗ, есть на сайте. <span class="yr y25">2025</span>Реферальную механику согласовали за три недели до запуска, а в дизайне и сборке её не оказалось. Клиенту обещали рейтинг всех участников, а в сборке был топ-10.</li>
+      <li class="item f"><b>Не только баги, но и невнесённое.</b> Правила, призы, копирайт, год в ©, мёртвые ссылки, модалки со старыми текстами — <span class="yr y24">2024</span>всё это нашлось перед показом.</li>
+      <li class="item f"><b>Все возрасты и роли.</b> Тестовый аккаунт на каждую группу или один аккаунт с детьми всех возрастов плюс сброс прогресса. Баги часто воспроизводятся только в одной возрастной группе. Старые тестовые аккаунты глючат после откатов, поэтому тестируем с чистого.</li>
+      <li class="item f"><b>Мобилка и браузеры.</b> Safari на iOS тестируем отдельно: куки, кэш, плывущая вёрстка. <span class="yr y26">2026</span>На Android не работал выпадающий список, и пользователи застряли в обязательном попапе. Скорость игр в разных браузерах тоже отличалась.</li>
+      <li class="item f"><b>Нестандартные сценарии.</b> Обновить страницу посреди активности, выйти и вернуться, нажать «играть ещё», исчерпать попытки, записаться повторно на тот же слот, запустить несколько вкладок сразу.</li>
+      <li class="item f"><b>Баллы.</b> Сверяем начисление с правилами и историей в личном кабинете. <span class="yr y26">2026</span>Рабочий приём: временно ставим разные баллы разным ролям, чтобы увидеть, как именно они начисляются.</li>
+      <li class="item f"><b>Письма и встречи — как реальный участник.</b> Письма получаем себе на почту. Встречи в МТС Линке проверяем не под аккаунтом создателя. Тестовые данные делаем реалистичными: <span class="yr y25">2025</span>в тестовой админке стояли ссылки на чужой сервис видеовстреч.</li>
+      <li class="item f"><b>Контент.</b> Сверяем с согласованным документом: перепутанные ответы, эмодзи, не соответствующие изменённому вопросу, понятность правил.</li>
+      <li class="item f"><b>Эксплойты и доступность</b> — по спискам из разделов <a href="#prevent">«Исключаем логикой»</a> и <a href="#design-a11y">«Доступность»</a>.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#rules">Правило 07: тестировщик на проект</a><a class="chip" href="#yg-rules">Колонка «Тестирование»</a><a class="chip" href="#launch-before">Запуск</a></div>
+</section>
+
+<section class="sec" id="launch" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · запуск</div>
+    <h2>Запуск</h2>
+    <p class="sec-lead">Запуск — это выкладка готового, а не день доделки.</p>
+  </div>
+  <div class="callout" id="launch-case">
+    <h3><span class="yr y25">2025</span>Разбор: почему запуск затянулся</h3>
+    <p class="f">У сборки не было общего внутреннего дедлайна и приёмки, поэтому готовность оценивали на глаз, и к утру старта работа ещё шла, хотя реклама клиента стояла на 13:00. В последний день всплыли заблокированный SMTP, отсутствие HTTPS, активности, открытые без регистрации, старые заглушки, невнесённые правки и непроверенная мобилка. Запуск затянулся до ночи, а МТС потом заговорил о штрафах.</p>
+    <p><b>Что делаем теперь:</b> у каждой задачи конкретная дата готовности, внутренний дедлайн — за несколько дней до старта, приёмка PM — до показа клиенту. Если к внутреннему дедлайну что-то не готово, заранее решаем с клиентом, что запускаем, а что переносим.</p>
+  </div>
+  <div class="flow" aria-label="Последовательность запуска">
+    <div class="st"><b>За несколько дней</b>Внутренний дедлайн, приёмка PM</div>
+    <div class="st"><b>За 2–3 дня</b>Показ СБ и ИБ МТС</div>
+    <div class="st"><b>Накануне</b>Контент и даты в админке, лишнее закрыто</div>
+    <div class="st"><b>День запуска</b>Проверка на проде</div>
+    <div class="st"><b>После проверки</b>«Можно делать рассылку»</div>
+    <div class="st"><b>Отдельно</b>Рискованное открываем вручную</div>
+  </div>
+  <div class="grid">
+    <div class="card" id="launch-before"><h3>За несколько дней до старта</h3><ul class="items">
+      <li class="item f">Внутренний дедлайн готовности и приёмка PM. У каждой задачи — конкретная дата готовности.</li>
+      <li class="item f">Показ СБ и ИБ МТС за 2–3 дня до старта.</li>
+      <li class="item f">Всё, что зависит только от нас (копирайт правил, письма, шаблоны), готово до показа клиенту: тексты, отданные вечером накануне, никто не успеет прочитать.</li>
+      <li class="item f">Накануне показа честно решаем, успеваем ли мы, и говорим клиенту заранее, а не в момент показа.</li>
+      <li class="item f">Время старта согласуем с клиентом и держим: к нему привязаны его реклама и рассылки.</li>
+      <li class="item f">Договариваемся, что разработчики на связи в день запуска и на следующий день. У многих в будни основная работа, поэтому об этом говорим заранее.</li>
+      <li class="item f">Контент на день запуска уже в админке. Даты открытия выставлены, и всё, что не должно быть открыто, закрыто. <span class="yr y26">2026</span>За день до старта в админке не хватало части контента, и запуск был под угрозой.</li>
+      <li class="item f">Данные, которые сохраняются у пользователя (персонажи, настройки профиля), правим до релиза. Иначе ошибка останется у всех, кто успел войти, и чинить придётся скриптом.</li>
+      <li class="item f">Даты активностей привязаны к дате старта. Если запуск сдвигается, сдвигаются и они. В плане учитываем праздники: <span class="yr y26">2026</span>про выходной 12 июня вспомнили накануне.</li>
+    </ul></div>
+    <div class="card" id="launch-day"><h3>День запуска</h3><ul class="items">
+      <li class="item f">Всё проверяем на проде, а не на тесте. <span class="yr y24">2024</span>В день запуска путались, что где.</li>
+      <li class="item f">Неавторизованный пользователь понимает, что делать: любой закрытый раздел ведёт на регистрацию или показывает «Войдите или зарегистрируйтесь, чтобы…». <span class="yr y25">2025</span>Регистрация пряталась только за кнопкой «Войти».</li>
+      <li class="item f">После проверки пишем клиенту: «всё проверили, работает, можно делать рассылку». До этого рассылку не запускают.</li>
+      <li class="item f">На комментарии клиента реагируем быстро и чётко.</li>
+      <li class="item f">Правки выкладываем пачками после проверки на тесте, а не по одной на прод каждые несколько минут.</li>
+      <li class="item f">Рискованные активности, например с ИИ, открываем вручную после проверки на проде. Не даём им открыться по таймеру.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#rules">Правило 08: внутренний дедлайн</a><a class="chip" href="#tech-sec">Безопасность МТС</a><a class="chip" href="#test-regress">Регрессия</a><a class="chip" href="#cl-launch">Чек-лист перед запуском</a></div>
+</section>
+
+<section class="sec" id="ops" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · запуск и волны</div>
+    <h2>После запуска: волны, поддержка, рассылки</h2>
+    <p class="sec-lead">После запуска проект становится операционкой: новые волны активностей, обращения, рассылки и переносы. Именно здесь набирается больше всего доп.работ.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="ops-waves"><h3>Релизы новых волн</h3><ul class="items">
+      <li class="item f">Перед каждым открытием составляем список активностей, которые стартуют, и назначаем проверяющего. Он убеждается, что открыты именно они и работают для всех возрастов. <span class="yr y26">2026</span>Из-за ошибки в админке на проде открылись активности раньше срока.</li>
+      <li class="item f">График выхода активностей по датам ведём в одном месте. <span class="yr y26">2026</span>Его вёл тестировщик.</li>
+      <li class="item f">Обновления открываем утром по Москве с учётом регионов, <span class="yr y25">2025</span>в 08:00. Если в рейтинге важна скорость, помним про часовые пояса: участник из Сахалинска и участник из Калининграда в разном положении.</li>
+      <li class="item f">Завершённую активность закрываем единообразно, с текстом «Активность завершена». <span class="yr y25">2025</span>У завершённой активности убрали кнопку записи, но саму активность не закрыли, и текст «слоты освобождаются» заставлял людей заходить снова.</li>
+      <li class="item f">Маленькие цифры участия публично не показываем.</li>
+    </ul></div>
+    <div class="card" id="ops-support"><h3>Поддержка</h3><ul class="items">
+      <li class="item f">FAQ для поддержки готовим до запуска. Типовые обращения: не тот возраст (стоял по умолчанию), ошибка в имени или почте, другой регион, «почему у меня меньше баллов», «почему победил он, а не я».</li>
+      <li class="item f">Договариваемся, кто сидит на поддержке и что это включает. На сайте пишем часы работы и срок ответа, например «по будням с 10:00 до 19:00 (по московскому времени)».</li>
+      <li class="item f">Кнопка поддержки стоит на видном месте. <span class="yr y26">2026</span>Она была спрятана, и люди шли жаловаться напрямую клиенту.</li>
+      <li class="item f">Отвечаем по шаблонам в тоне клиента, с подписью и по существу, без отписок. <span class="yr y25">2025</span>Тон ответов поддержки клиент отдельно разбирал на закрывающей встрече.</li>
+      <li class="item f">Каждое обращение клиента или пользователя заносим в трекер и ведём до закрытия. <span class="yr y25">2025</span>Одно обращение не занесли в трекер, и оно потерялось.</li>
+      <li class="item f">Разработчику передаём ссылку на пользователя в админке, скрины и шаги. Если воспроизвести не получается, а сбой разовый, вручную начисляем баллы и отвечаем пользователю.</li>
+      <li class="item f">Путаницу «номер в рандомайзере против места в рейтинге» снимаем ссылкой на таблицу и видео розыгрыша.</li>
+      <li class="item f">Для пользовательского контента есть правила и регулярная чистка. <span class="yr y26">2026</span>После запуска ИИ-галереи из неё пришлось удалять работы, и обсуждали разъяснительное письмо родителям.</li>
+    </ul></div>
+    <div class="card" id="ops-mail"><h3>Рассылки</h3><ul class="items">
+      <li class="item f"><b>Всё, что можно предусмотреть, заложено в админку заранее</b> — по <a href="#list-mail">списку рассылок</a>. Ручная рассылка — исключение, а не норма.</li>
+      <li class="item f">Процедуру ручной рассылки записываем по шагам, чтобы её мог повторить коллега. <span class="yr y24">2024</span>Пример: выгрузка из админки → таблица → фильтр региона → новые против уже получивших → список в сервисе рассылок → копия письма. Старые списки не удаляем, а переименовываем.</li>
+      <li class="item f">Перед массовой отправкой шлём тест на свои адреса и проверяем картинки и ссылки. После отправки сразу открываем ссылку из пришедшего письма: <span class="yr y25">2025</span>она вела на зависшую от нагрузки страницу.</li>
+      <li class="item f">Фильтр сегмента уточняем до города: попадают ли в «Москву и МО» Королёв и Люберцы. Две рассылки по пересекающимся базам одновременно не запускаем. Дубли и пробелы в адресах чистим.</li>
+      <li class="item f">Сервис рассылок блокирует тех, кто когда-то отписался через него от других рассылок. <span class="yr y24">2024</span>Так выпали 44 адреса, им досылали вручную в скрытой копии.</li>
+      <li class="item f">Кто что видит, продумываем для всех пользователей. <span class="yr y24">2024</span>Модалку про ивент показывали только новым, а рассылка ушла всем, и старые пользователи писали в поддержку. Ссылка на анкету должна оставаться доступной после закрытия попапа.</li>
+      <li class="item f">Тех, кто просит не писать, исключаем из рассылок. После дедлайна форму или регистрацию закрываем и вешаем сообщение, иначе пишут «регистрация не работает».</li>
+      <li class="item f">Если клиент меняет дедлайн или правила без нас, мы узнаём об этом от пользователей. <span class="yr y24">2024</span>Вывод: такие коммуникации либо полностью делаем и продумываем сами, либо не берём.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#cl-mail">Чек-лист перед рассылкой</a></div></div>
+    <div class="card" id="ops-slots"><h3>Сессии со слотами и переносы</h3><ul class="items">
+      <li class="item f">Слоты экспертов ограничиваем и актуализируем к открытию: «в любое время» и «договоримся» не принимаем. Даты слотов сверяем с датой открытия и порогом записи: <span class="yr y25">2025</span>из-за правила «не позднее чем за 3 дня» сгорели 20 слотов из 34.</li>
+      <li class="item f">В текстах указываем крайний срок записи и отмены. <span class="yr y26">2026</span>Запись закрывалась за 24 часа до слота.</li>
+      <li class="item f">Сценарий переноса мероприятия готовим заранее: новая дата в сервисе встреч, массовая смена слотов скриптом (<span class="yr y26">2026</span>их было 200), выгрузка записавшихся и письмо им.</li>
+      <li class="item f">Если эксперт не пришёл, сначала проверяем логи встречи и свои договорённости. Участнику — извинение, новый слот вручную и подарок. <span class="yr y25">2025</span>Когда эксперты массово пропускали слоты, помогло только подключение руководства клиента.</li>
+      <li class="item f">Перенос слота, на который уже записался человек, делаем вручную и предупреждаем участника.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#tech-mail">Письма</a><a class="chip" href="#admin-panel">Защита массовых действий</a><a class="chip" href="#client-scope">Доп.работы</a><a class="chip" href="#cl-wave">Чек-лист перед волной</a></div>
+</section>
+
+<section class="sec" id="offline" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · запуск и волны</div>
+    <h2>Офлайн, трансляция и розыгрыши</h2>
+    <p class="sec-lead">Офлайн-часть, трансляция и розыгрыши — отдельный проект внутри проекта. <span class="yr y24">2024</span><span class="yr y25">2025</span>Их строили на ходу, после запуска платформы, и именно на них ушла большая часть ручной работы. Поэтому план на них составляем ещё на старте.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="off-event"><h3>Офлайн-мероприятие</h3><ul class="items">
+      <li class="item f">Путь пользователя до площадки (приглашение, «иду / не иду», анкета, напоминание) продумываем до запуска и делаем на платформе. <span class="yr y24">2024</span>Анкета была в Google-форме без почты, и ответы сопоставляли с участниками вручную: из 1047 ответов 256 оказались дублями.</li>
+      <li class="item f">Приглашения рассылаем примерно за 10 дней до мероприятия.</li>
+      <li class="item f">В письме-приглашении сразу все детали: дата, время по Москве, адрес, как добраться, парковка, программа, что взять с собой (паспорт) и что нельзя проносить. Для инклюзивного ивента — доступность площадки: пандусы, волонтёры, жестовый язык.</li>
+      <li class="item f">Точку на карте ставим ко входу, иначе маршрут строится в обход на полчаса. Адрес и время от клиента проверяем по картам. Названия станций метро пишем единообразно.</li>
+      <li class="item f">Подтверждение участия — простая кнопка в личном кабинете. Сложные схемы со ссылками из писем ломались в каждом проекте. Дедлайн подтверждения ставить бесполезно: люди либо отвечают сразу, либо не отвечают вообще.</li>
+      <li class="item f">После отправки формы всегда показываем отбивку: «анкета принята, дополнительных подтверждений не требуется».</li>
+      <li class="item f">Вопросы логистики закрываем с клиентом заранее: можно ли одному родителю прийти с двумя детьми, пускают ли малышей, какие данные нужны для прохода, нужны ли ФИО сопровождающих. <a href="#list-event">Типовая анкета</a></li>
+      <li class="item f">Для участников, которым нужно сопровождение, вместе с ивент-агентством заранее готовим процесс: встреча у метро, контакт координатора, волонтёр. Отвечаем быстро, потому что подрядчики заканчивают работу в шесть.</li>
+      <li class="item f">Дожим ведём по плану: сначала звонок, потом письмо. В таблице по каждому человеку отмечено, какие письма он получил. Отметки «иду» из обзвона сразу вносим во все таблицы.</li>
+      <li class="item f">На день мероприятия делаем выгрузку-бэкап списков: на площадке может не быть связи.</li>
+      <li class="item f">Механику офлайна сверяем с пропускной способностью. «Пройди все точки, чтобы получить приз» не работает, если точки не пропускают столько людей.</li>
+    </ul></div>
+    <div class="card wide" id="off-stream"><h3>Трансляция: план по шагам</h3><ol class="steps">
+      <li class="f"><b>На старте.</b> Выясняем, будет ли трансляция, кто её организует и на какой площадке. Обычно организует не агентство, а мы встраиваем чужой плеер: <span class="yr y25">2025</span>в брифе было «онлайн-трансляции», а по факту нужно было встроить плеер подрядчика. Сразу решаем, нужны ли запись, субтитры и хранение записи на сайте, и закладываем их в смету: <span class="yr y25">2025</span>всё это пришлось добавлять в доп.смету.</li>
+      <li class="f"><b>За 1–2 недели.</b> Запрашиваем документацию по встраиванию и напрямую связываем разработчика с подрядчиком трансляции. <span class="yr y25">2025</span>Площадка оказалась не той, о которой говорили сначала, и документацию получили поздно. Уточняем способ встраивания, разрешение плеера для заставок, место плеера в дизайне. Готовим заглушку «эфир начнётся [дата, время по Москве]» и письмо-приглашение: для регионов — без персонализации, чтобы обойтись без разработчика.</li>
+      <li class="f"><b>За день.</b> Тестовый поток: проверяем плеер на сайте, на мобилке и десктопе. Помним, что у тестового и боевого плеера разные ID. Если в проекте доступность — проверяем плеер с клавиатуры и скринридером. <span class="idea">идея</span>Проверяем открытие с рабочего компьютера МТС: корпоративная сеть может не пускать внешние сервисы.</li>
+      <li class="f"><b>День эфира.</b> Ставим боевой ID, до старта висит заглушка. Кнопка «Получить приглашение» меняется на «Смотреть трансляцию». <span class="idea">идея</span>Один человек из команды весь эфир на связи с подрядчиком трансляции и следит за плеером на сайте.</li>
+      <li class="f"><b>После эфира.</b> Получаем запись, сжимаем (<span class="yr y25">2025</span>файл на 10 ГБ сжимали до 1–2 ГБ), добавляем субтитры на подложке, проверяем, что бэк держит большие файлы. Меняем плеер на запись и проверяем ссылки: <span class="yr y26">2026</span>ссылка на завершённый эфир открывалась без записи.</li>
+    </ol>
+    <div class="related"><a class="chip" href="#cl-stream">Чек-лист трансляции</a><a class="chip" href="#design-a11y">Доступность</a></div></div>
+    <div class="card" id="off-draw"><h3>Розыгрыш: порядок</h3><ol class="steps">
+      <li class="f">Выгружаем участников на момент розыгрыша.</li>
+      <li class="f">Исключаем тех, кто не участвует по правилам: наши и клиентские тестовые аккаунты, уже выигравшие, не набравшие порог. Помечаем их в таблице цветом.</li>
+      <li class="f">Проверяем топ на мультиаккаунты. <span class="yr y24">2024</span>Победитель играл с двух аккаунтов.</li>
+      <li class="f">Проводим розыгрыш в сервисе рандома и пишем видео экрана.</li>
+      <li class="f">Публикуем победителей по нику или коду и отправляем им письма. Почты и ФИО передаём клиенту.</li>
+      <li class="f">Публикуем таблицу победителей на сайте, проверив её отображение.</li>
+    </ol>
+    <div class="related"><a class="chip" href="#prevent">Мультиаккаунты: исключаем логикой</a><a class="chip" href="#cl-draw">Чек-лист</a></div></div>
+    <div class="card" id="off-draw-rules"><h3>Розыгрыш: правила</h3><ul class="items">
+      <li class="item f">Критерии отбора — строго по опубликованным правилам, ничего сверх них.</li>
+      <li class="item f">Если призов больше, чем претендентов (<span class="yr y25">2025</span>157 призов при 49–105 претендентах), решаем с клиентом до розыгрыша, что делать с остатком.</li>
+      <li class="item f">Таблицу победителей после публикации не меняем: её уже видели участники.</li>
+      <li class="item f">Рейтинги и списки победителей публикуем на фронте статично, а не подтягиваем из админки. Это вывод ретро 2024 года.</li>
+      <li class="item f">Таблица победителей на сайте с понятными столбцами (без баллов): код или ник, возрастная группа или город, приз. Если приз на картинке не очевиден, подписываем его текстом.</li>
+      <li class="item f">Результаты не показываем, пока не проверили, как они выглядят на сайте. Письма победителям не уходят автоматом ночью.</li>
+      <li class="item f">После окончания акции показываем закрывающую модалку: «акция завершена» и «если ты среди победителей, с тобой свяжутся по почте в течение 5 рабочих дней». Иначе поддержку завалят вопросами, как получить приз.</li>
+      <li class="item f">В день розыгрыша всё идёт параллельно: выгрузка, розыгрыш, видео, письма, таблица на сайт. Расписываем, кто что делает, заранее. Раздача промокодов вручную занимает время, его тоже закладываем.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#legal-prizes">Призы и правила</a><a class="chip" href="#ops-mail">Рассылки</a><a class="chip" href="#admin-export">Выгрузка</a></div>
+</section>
+
+<section class="sec" id="closing" data-group="По этапам">
+  <div class="sec-head">
+    <div class="eyebrow">По этапам · закрытие</div>
+    <h2>Закрытие проекта</h2>
+    <p class="sec-lead">Закрытие — это отчёт, деньги, передача домена и данных. Всё это проще, если собиралось по ходу проекта, а не вспоминается в конце.</p>
+  </div>
+  <div class="rules">
+    <article class="rule f"><h3>Отчёт</h3><p>Цифры берём по списку метрик, согласованному на старте: участники, прохождения по активностям, «записей / состоялось», география, обращения в поддержку. Клиент может попросить цифры и для сценария мероприятия: <span class="yr y24">2024</span>3858 участников, 24 655 игр, 78 регионов. Поэтому полная выгрузка должна быть под рукой.</p><div class="links"><a class="chip" href="#admin-export">Выгрузка и метрики</a></div></article>
+    <article class="rule f"><h3>Доп.смета</h3><p>Собираем по журналу доп.работ, а не по памяти. <span class="yr y25">2025</span>Туда попали поддержка и рассылки (выходные вдвойне), менеджмент, рассылка уникальных промокодов, события метрики, обработка фото, субтитры, сжатие и хранение записи эфира, QA. Вспоминать всё это задним числом было долго и наверняка неполно.</p><div class="links"><a class="chip" href="#client-scope">Журнал доп.работ</a></div></article>
+    <article class="rule f"><h3>Домен</h3><p>Передаём МТС (код переноса) только после финальной рассылки клиента и его отмашки.</p><div class="links"><a class="chip" href="#start-domain">Регистратор</a></div></article>
+    <article class="rule f"><h3>Данные</h3><p>Делаем финальную выгрузку участников на дату закрытия. Перед сносом сервера забираем всё, включая видео розыгрышей и записи эфиров. Клиенту отдаём то, о чём договорились на старте: через месяц уже может быть поздно.</p><div class="links"><a class="chip" href="#admin-store">Что храним</a></div></article>
+    <article class="rule f"><h3>Кейс</h3><p>Тестовый стенд оставляем живым: <span class="yr y24">2024</span>кейс-видео снимали именно на нём. В кейсе указываем подрядчиков, итог показываем тем, кто делал часть работы.</p></article>
+    <article class="rule f"><h3>Закрывающая встреча</h3><p>Команда в это время на связи на случай срочных вопросов. Обратную связь клиента собираем и передаём команде. <span class="yr y26">2026</span>Клиент был очень доволен, а опрос по платформе дал в среднем выше 9 баллов по каждому пункту.</p></article>
+    <article class="rule f"><h3>Ретро</h3><p>Выводы записываем и переносим в эту памятку. Ценно только то, что реально применяем на следующем проекте.</p></article>
+    <article class="rule f"><h3>Аккаунт</h3><p>По итогам — подарки клиентам, обновлённые кейсы и выход на ЛПР через руководство.</p></article>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#cl-close">Чек-лист закрытия</a><a class="chip" href="#pitfalls">Грабли</a></div>
+</section>
+
+<section class="sec" id="team" data-group="Работа">
+  <div class="sec-head">
+    <div class="eyebrow">Работа · всё время проекта</div>
+    <h2>Команда и подрядчики</h2>
+    <p class="sec-lead">Команда работает быстрее, когда задачи, правки и решения живут в одном месте, а не в переписке. <span class="yr y26">2026</span>Канбан-доску завели только через неделю после запуска, и до этого задачи терялись в чате.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="team-tracker"><h3>Трекер и правки</h3><ul class="items">
+      <li class="item f">Все задачи и правки — в трекере. Правка, обсуждённая в чате и не занесённая в трекер, теряется. <span class="yr y25">2025</span><span class="yr y26">2026</span>Так было оба раза.</li>
+      <li class="item f">У доски есть колонка «Тестирование» с ответственным за приёмку, а у каждой карточки — исполнитель и проверяющий.</li>
+      <li class="item f">У правки три статуса: принята, внесена, проверена. Отдельно отмечаем «согласовано клиентом» и «ждём МТС». <span class="yr y24">2024</span>В клиентском чате работала конвенция: 👌 — приняли, 💯 — внесли.</li>
+      <li class="item f">Одна проблема — одна задача с конкретным исполнителем. Если один и тот же дефект в нескольких активностях, допустима одна задача с перечнем.</li>
+      <li class="item f">Сделанное сразу убираем из списка правок, иначе в нём невозможно ориентироваться.</li>
+      <li class="item f">Новая задача всегда идёт в трекер с дедлайном. Исполнитель не должен сам отслеживать, что поменялось в фигме или в чате.</li>
+      <li class="item f">Доступ к трекеру есть у всех, включая руководителя. <span class="yr y25">2025</span>Из-за лимита аккаунтов у руководителя не было доступа, <span class="yr y26">2026</span>а часть команды какое-то время не могла зайти на доску.</li>
+    </ul>
+    <div class="related"><a class="chip" href="#yougile">Структура доски</a></div></div>
+    <div class="card" id="team-bug"><h3>Шаблон баг-репорта</h3>
+      <p class="f" style="margin:0;font-size:15px"><span class="yr y26">2026</span>Шаблон появился после задачи «обновление страницы ломает активность». Баг описываем так, чтобы другой человек повторил его без вопросов.</p>
+      <div class="code"><button type="button" class="copy">Копировать</button><pre>Заголовок: [Название активности] что ломается и при каком действии
+
+Окружение: стенд (тест/прод), браузер и устройство, роль и возраст, ссылка на страницу
+Предусловия: что сделано до начала проверки
+Шаги:
+1. Открыть …
+2. Нажать …
+3. Обновить страницу
+Фактический результат: что произошло
+Ожидаемый результат: что должно было произойти (с точным текстом, если речь о тексте)
+Дополнительно: скрин или видео, id пользователя, время; для бэка — ответ из вкладки Network</pre></div>
+    </div>
+    <div class="card" id="team-chat"><h3>Чат и коммуникации</h3><ul class="items">
+      <li class="item f">В чате сразу заводим темы по разделам. В общий поток рабочее не пишем: там вопросы теряются.</li>
+      <li class="item f">Вопрос адресуем через @. Без отметки человек может просто не увидеть сообщение в потоке из сотни других.</li>
+      <li class="item f">С разработчиками общаемся в общем чате или трекере, а не в личке. Если кто-то читает только личку, дублируем туда, но задача всё равно живёт в трекере.</li>
+      <li class="item f">Блокирующие вопросы разработчиков — главный приоритет PM. <span class="yr y26">2026</span>Ответа про повторные попытки ждали несколько часов, решение приняли без PM, и потом его пришлось переделывать.</li>
+      <li class="item f">Утром — план дня по приоритетам. В пятницу — список того, что нужно успеть закрыть с подрядчиками до выходных, с ответственным и сроком по каждому пункту.</li>
+      <li class="item f">Если ты будешь вне связи, предупреждаешь команду заранее и оставляешь заместителю доступы и контакты.</li>
+    </ul></div>
+    <div class="card" id="team-contractors"><h3>Работа с подрядчиками</h3><ul class="items">
+      <li class="item f">Бриф начинаем с контекста проекта и фиксируем текстом, даже если обсуждали голосом. Иначе кто-то поймёт по-своему или забудет, а сроки уже горят.</li>
+      <li class="item f">Дедлайн есть у каждой задачи. Если срок сорван, даём спокойный фидбэк: что это задержало и что пришлось перестраивать.</li>
+      <li class="item f">Тон чёткий: что нужно сделать и к какому сроку, без просительных формулировок.</li>
+      <li class="item f">Если по задаче нет понятного срока готовности, в тот же день созваниваемся и фиксируем дату, при необходимости подключаем руководителя. Если исполнитель не выходит на связь, ставим крайний срок ответа, после которого забираем доступ к репозиторию. Оплата после сдачи — рабочий рычаг.</li>
+      <li class="item f">Знаем своих подрядчиков: кому удобнее задачи пачкой, а кому по одной, кому нужен подробный бриф.</li>
+      <li class="item f">Комментарии клиента передаём без негатива и от лица команды. Это одна из главных функций PM. Подрядчика не добавляем в чат, где клиент жёстко критикует его работу.</li>
+      <li class="item f">Фронт собирает всё на последнем этапе, поэтому на вход фронту отдаём только готовое: дизайн, контент, механику.</li>
+      <li class="item f">ИИ-ассистенты ускоряют работу, но за ними нужен контроль. При вёрстке ИИ создавал свои компоненты вместо UI-kit. <span class="yr y26">2026</span>По итогам: без ИИ в такие сроки было бы не успеть, но часть ошибок появилась из-за того, что на него переложили слишком много.</li>
+      <li class="item f">Оценки нестандартных задач неточные. На старте договариваемся, как сообщать о неопределённости.</li>
+      <li class="item f">Благодарим: деньгами за ночной аврал, упоминанием в кейсе (подрядчиков указываем всегда), показом итога. Инструментальные расходы подрядчиков возмещаем.</li>
+      <li class="item f">Если результат раз за разом не попадает в задачу даже с гайдами, меняем исполнителя, а не доделываем за него. Свой проверенный фронт даёт меньше зависимости и честную картину готовности.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#rules">Правило 03: один трекер</a><a class="chip" href="#rules">Правило 12: решения письменно</a><a class="chip" href="#start-team">Команда на старте</a></div>
+</section>
+
+<section class="sec" id="yougile" data-group="Работа">
+  <div class="sec-head">
+    <div class="eyebrow">Работа · готовим до старта</div>
+    <h2>Трекер: структура в YouGile</h2>
+    <p class="sec-lead">Доску готовим до старта проекта, чтобы в первый день команда сразу работала в ней. Рекомендуем одну доску на проект: колонки по статусам, а роль, раздел и волна — стикерами. <span class="yr y26">2026</span>Колонки были по ролям, и статус задачи и проверяющего было видно хуже, чем исполнителя.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="yg-prep"><h3>Подготовка доски до старта</h3><ol class="steps">
+      <li class="f">Создаём доску по варианту 1: колонки статусов и служебные колонки.</li>
+      <li class="f">Заводим стикеры: роли, разделы, волны, типы задач, проверяющий.</li>
+      <li class="f">Кладём под рукой шаблоны карточки и баг-репорта.</li>
+      <li class="f">Заводим первые карточки: вопросы к кикоффу, «Ждём от клиента», заготовки инфраструктуры.</li>
+      <li class="f">Приглашаем команду и в первый день проверяем, что все зашли с нужной почты и видят доску.</li>
+    </ol></div>
+  </div>
+  <div class="tbl" id="yg-variants"><table>
+    <thead><tr><th style="width:20%">Вариант</th><th style="width:30%">Как устроено</th><th style="width:25%">Когда подходит</th><th>Минус</th></tr></thead>
+    <tbody>
+      <tr class="f"><td>1. Колонки по статусам <span class="rec">рекомендую</span></td><td>Входящие → Ждём клиента → В работе → Тестирование → Согласование у клиента → Готово. Роль, раздел и волна — стикерами</td><td>Любой проект. Виден путь задачи и то, что застряло у клиента</td><td>Карточек много, нужен фильтр по роли</td></tr>
+      <tr class="f"><td>2. Колонки по ролям <span class="yr y26">как в 2026</span></td><td>Фронт, Бэк, Дизайн, Контент, Тестирование</td><td>Каждый сразу видит свою очередь</td><td>Статус не виден, задачу между ролями переносят руками, приёмка теряется</td></tr>
+      <tr class="f"><td>3. Доски по волнам</td><td>Доска на каждый релиз (Запуск, Волна 2…, Поддержка), внутри колонки по статусам</td><td>Проекты с релизами по неделям, как СоздАния</td><td>Общие задачи вроде админки и писем кочуют между досками</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="board-wrap" id="yg-board">
+    <h3 style="margin:28px 0 0;font-size:17px">Как выглядит вариант 1</h3>
+    <p class="note">Пример наполнения, карточки условные. Колонку «Тестирование» разбирает проверяющий, а не исполнитель.</p>
+    <div class="board" tabindex="0" aria-label="Пример доски: колонки по статусам">
+      <div class="bcol"><h4>Входящие</h4>
+        <div class="kc">Правка из чата: текст модалки «попытки закончились»<div class="stk"><span>контент</span><span>правка клиента</span><span>квиз</span></div></div>
+        <div class="kc">Как засчитывается повторное прохождение?<div class="stk"><span>бэк</span><span>вопрос</span></div></div>
+      </div>
+      <div class="bcol"><h4>Ждём клиента</h4>
+        <div class="kc">Эталонный список названий и ToV<div class="stk"><span>PM</span><span>ждём МТС</span></div></div>
+        <div class="kc">Призы и их стоимость для правил<div class="stk"><span>юрист</span><span>ждём МТС</span></div></div>
+      </div>
+      <div class="bcol"><h4>В работе</h4>
+        <div class="kc">Шаблон письма и письмо «сброс пароля»<div class="stk"><span>бэк</span><span>запуск</span><span class="r">проверяет: тестировщик</span></div></div>
+        <div class="kc">Модалка правил игры, все состояния<div class="stk"><span>дизайн</span><span>волна 2</span></div></div>
+      </div>
+      <div class="bcol hl"><h4>Тестирование</h4>
+        <div class="kc">Начисление баллов в совместном квизе<div class="stk"><span>бэк</span><span>баг</span><span class="r">проверяет: тестировщик</span></div></div>
+        <div class="kc">Обновление страницы посреди игры<div class="stk"><span>фронт</span><span>баг</span><span class="r">проверяет: PM</span></div></div>
+      </div>
+      <div class="bcol"><h4>Согласование у клиента</h4>
+        <div class="kc">Пакет макетов: личный кабинет<div class="stk"><span>дизайн</span><span>ждём МТС</span></div></div>
+      </div>
+      <div class="bcol"><h4>Готово</h4>
+        <div class="kc">Регистрация: код на почту<div class="stk"><span>фронт</span><span>бэк</span><span>запуск</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card" id="yg-extra"><h3>Служебные колонки при любом варианте</h3><ul class="items">
+      <li class="item f"><b>Ждём от клиента.</b> Всё, что должен отдать клиент, с датой. Это и напоминалка, и аргумент, когда сроки сдвигаются.</li>
+      <li class="item f"><b>Решения.</b> Принятые решения по механике и договорённости созвонов с датой. Решение из этой колонки сразу вносим в ТЗ и прототип.</li>
+      <li class="item f"><b>Вопросы и блокеры.</b> Вопросы разработчиков, без ответа на которые работа стоит. PM разбирает эту колонку первой.</li>
+      <li class="item f"><b>Поддержка.</b> Обращения пользователей и клиента до закрытия.</li>
+      <li class="item f"><b>Доп.работы.</b> Журнал с часами — сразу готовая основа для доп.сметы.</li>
+      <li class="item f"><b>Релизы.</b> График выхода активностей по датам. <span class="yr y26">2026</span>Его вёл тестировщик.</li>
+    </ul></div>
+    <div class="card" id="yg-stickers"><h3>Стикеры на карточке</h3><ul class="items">
+      <li class="item f"><b>Роль:</b> фронт, бэк, дизайн, контент, юрист, PM.</li>
+      <li class="item f"><b>Раздел или активность.</b> <span class="yr y26">2026</span>Правки путались именно из-за того, что было непонятно, к какой активности они относятся.</li>
+      <li class="item f"><b>Волна</b> или дата релиза.</li>
+      <li class="item f"><b>Тип:</b> задача, баг, правка клиента, вопрос.</li>
+      <li class="item f"><b>Проверяющий</b> — не тот же человек, что и исполнитель.</li>
+    </ul>
+    <h3 style="margin-top:22px">Шаблон карточки</h3>
+    <p class="f" style="margin:0;font-size:15px">Карточка заранее отвечает на вопросы, которые иначе исполнитель задаёт в чате: что именно сделать, когда задача готова, где ссылки.</p>
+    <div class="code"><button type="button" class="copy">Копировать</button><pre>Контекст: пара строк о проекте и месте задачи в нём
+Что сделать: …
+Готово, когда: ожидаемый результат (точный текст, если речь о тексте)
+Ссылки: прототип, ТЗ, фигма, админка, стенд
+Дедлайн и проверяющий</pre></div></div>
+    <div class="card wide" id="yg-rules"><h3>Правила доски</h3><ul class="items">
+      <li class="item f">Правка из чата в тот же день становится карточкой, а в чат уходит ссылка на неё. <span class="yr y26">2026</span>Это приняли как правило команды.</li>
+      <li class="item f">Одна карточка — один исполнитель. Один дефект в нескольких активностях — одна карточка с перечнем.</li>
+      <li class="item f">В «Готово» карточку переносит только проверяющий.</li>
+      <li class="item f">Бот деплоя переносит сделанные задачи в «Тестирование» на тестировщика и пишет, что проверить. <span class="yr y26">2026</span>Это уже работало.</li>
+      <li class="item f">В первый день каждый подтверждает, что видит доску. <span class="yr y26">2026</span>Люди регистрировались не с той почты и попадали не в ту команду, а файлы в задачах некоторое время не грузились. Важные файлы дублируем в папку проекта.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#team-tracker">Трекер и правки</a><a class="chip" href="#client-scope">Журнал доп.работ</a><a class="chip" href="#ops-waves">Релизы волн</a><a class="chip" href="#cl-prestart">Чек-лист до старта</a></div>
+</section>
+
+<section class="sec" id="client" data-group="Работа">
+  <div class="sec-head">
+    <div class="eyebrow">Работа · всё время проекта</div>
+    <h2>Клиент: согласования, правки, доп.работы</h2>
+    <p class="sec-lead">Наше конкурентное преимущество — скорость и чёткость коммуникации. <span class="yr y24">2024</span>Клиент хвалил именно её, ивент-агентство ставило нас в пример своим сотрудникам, <span class="yr y26">2026</span>а поддержка получила самую высокую оценку в опросе по итогам платформы.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="client-approve"><h3>Согласования</h3><ul class="items">
+      <li class="item f">В тайминге есть сроки на согласование, и они дисциплинируют клиента. Когда клиент задерживает, показываем цветом, что и почему сдвигается. Переносим не только просроченное, но и всё, что это тянет за собой.</li>
+      <li class="item f">На согласование отдаём пакетом, а не по одному фрейму. К пакету — список «что, кому, когда», все согласующие отмечены и срок ответа указан.</li>
+      <li class="item f">У клиента бывает пять согласующих. Закрываем вопрос, только когда ответили все.</li>
+      <li class="item f">На каждый ассет нужен явный «ок» клиента до передачи в разработку. Потом даже мелкая правка обойдётся дорого.</li>
+      <li class="item f">Итерации правок имеют рамку. Когда горит, не просим «комментарии», а отдаём финал и просим подтвердить, что забираем в вёрстку. Мелочи вроде инпутов и цветов правим уже на вёрстке.</li>
+      <li class="item f">Согласованное с датой считается зафиксированным. <span class="yr y25">2025</span>Комментарии появились в таблице уже после согласования, из анонимного аккаунта и без уведомления. Такие комментарии без обсуждения не принимаем.</li>
+      <li class="item f">Поздние правки к утверждённому дизайну — это перевёрстка в десктопе и мобилке. Их берём как доп.работы или переносим на после запуска, и только с чётким ТЗ.</li>
+      <li class="item f">Письменные комментарии клиента сверяем с договорённостями встречи. <span class="yr y25">2025</span>В присланных комментариях не было исправлено даже то, что обсудили голосом.</li>
+      <li class="item f">Когда надо согласовать быстро, решённые вопросы заново не открываем. Варианты на выбор даём таблицей и не больше 2–3.</li>
+      <li class="item f">Запросы клиенту формулируем точно. <span class="yr y24">2024</span>На просьбу сократить текст клиент подключил своего копирайтера и переписал всё заново.</li>
+      <li class="item f">Если клиент долго молчит (<span class="yr y25">2025</span>встречу переносили семь раз), дожимаем через руководителя и письменно фиксируем влияние на сроки.</li>
+    </ul></div>
+    <div class="card" id="client-scope"><h3>Скоуп и деньги</h3><ul class="items">
+      <li class="item f">Всё, чего нет в смете, оцениваем отдельно и сразу говорим клиенту. <span class="yr y24">2024</span>Доп.рассылки, попапы и формы после запуска сразу собрали в одну оценку и озвучили.</li>
+      <li class="item f">Доп.работы записываем в журнал в момент выполнения: что, кто, сколько часов, какие дни (выходные считаются дороже). Это и аргумент в разговоре о деньгах, и способ показать клиенту реальный объём работы.</li>
+      <li class="item f">Операционку закладываем в смету сразу: рассылки, анкеты, призы, ежедневные выгрузки, поддержку. <span class="yr y24">2024</span>Всё это не было заложено, а работы по нему оказалось много.</li>
+      <li class="item f">Финансовые вопросы закрываем до запуска. <span class="yr y24">2024</span>Спор по смете утром в день запуска стоил всем нервов.</li>
+      <li class="item f">Новые хотелки в горячую фазу откладываем на после запуска. Если клиент через месяц после согласования структуры хочет другие активности, сразу называем дату, до которой нужен его контент.</li>
+      <li class="item f">На нереализуемое не соглашаемся и предлагаем проще заранее, а не за день. <span class="yr y26">2026</span>Один раздел пришлось упрощать уже по ходу, потому что он не укладывался в сроки и бюджет.</li>
+      <li class="item f">Не раздуваем: клиенту часто нужно проще, чем хочется сделать нам. <span class="yr y24">2024</span>Сделали 4 картинки на игру вместо 14. Стараемся сделать как можно лучше, но в рамках ресурсов.</li>
+      <li class="item f">Хотелки клиента проверяем на смысл. Кнопка «Выйти» посреди квиза на сайте не нужна. Обновления контента не обещаем без надобности, а если обещаем, то только то, что легко обновлять.</li>
+      <li class="item f">Логику механики держим у себя и не отдаём придумывать клиенту или ивент-агентству.</li>
+    </ul></div>
+    <div class="card" id="client-comm"><h3>Коммуникация</h3><ul class="items">
+      <li class="item f">Итоги встречи записываем по ходу и сразу после оформляем по разделам, пока свежо. Клиенту — список «какой контент и когда мы ждём от вас и когда тогда выход». Себе — список действий, включая «посчитать».</li>
+      <li class="item f">Сроки называем честно и с запасом: если задача займёт час, так и говорим, а не «до часа», иначе клиент будет ждать.</li>
+      <li class="item f">PM — щит между клиентом и разработкой. Технические проблемы объясняем клиенту простыми словами и сами готовим эти объяснения. Технический отказ от обещанного сразу обсуждаем с клиентом.</li>
+      <li class="item f">Кухню клиенту не показываем: внутренние таблицы, черновые прототипы, сырой тестовый стенд.</li>
+      <li class="item f">Факты от клиента проверяем. <span class="yr y24">2024</span>Клиент прислал неверный адрес площадки, а email-рассылку уже не отозвать.</li>
+      <li class="item f">В новом чате представляемся новым людям, даже если уже представлялись до их прихода. Исполнителя подключаем в клиентский чат сразу, чтобы не пересылать.</li>
+      <li class="item f">Верхний уровень клиента часто видит баги раньше нас — скрины приходят от руководителя. В день запуска реагируем быстро, иначе создаётся впечатление, что ничего не работает.</li>
+      <li class="item f">С генподрядчиком и клиентом не ссоримся ни с тем, ни с другим, даже когда нас просят занять чью-то сторону.</li>
+      <li class="item f">Отношения с контактом клиента поддерживаем: поздравления, подарки по итогам, выход на ЛПР через руководство.</li>
+    </ul></div>
+    <div class="card wide" id="client-qa"><h3>Экспертиза качества и штрафы</h3><ul class="items">
+      <li class="item f">У МТС бывает формальная экспертиза качества платформы. Это таблица замечаний с уровнями Blocker, Critical и Major, а эксперт сам ищет баги и неадаптив на мобилке. При любом Blocker или Critical платформу не допускают дальше. Закладываем экспертизу в план.</li>
+      <li class="item f">Blocker и Critical исправляем сразу, остальное аргументируем. Чем дольше тянем с ответом, тем больше замечаний находят.</li>
+      <li class="item f"><span class="yr y25">2025</span>МТС готовил штрафы генподрядчику, а значит и нам. Основания: сдвиг запуска, несоблюдение редполитики, вёрстка не как в фигме и тексты, которых в фигме не было.</li>
+      <li class="item f">Клиенту заранее объясняем, что адаптив — это сайт, а не картинка из фигмы. Пиксель в пиксель на всех экранах не будет.</li>
+    </ul></div>
+  </div>
+  <div class="related"><span class="lbl">Связано</span><a class="chip" href="#rules">Правило 10: доп.работы сразу</a><a class="chip" href="#design-comments">Комментарии бренда</a><a class="chip" href="#closing">Доп.смета</a><a class="chip" href="#launch-case">Разбор запуска</a></div>
+</section>
+
+<section class="sec" id="lists" data-group="Шпаргалки">
+  <div class="sec-head">
+    <div class="eyebrow">Шпаргалки · до старта и на старте</div>
+    <h2>Типовые списки</h2>
+    <p class="sec-lead">Что обычно бывает в регистрации, анкете, письмах и выгрузке. Проходим по списку до кикоффа и отмечаем то, что берём в проект; спорные пункты уточняем у клиента. Серым — откуда пункт и что уточнить.</p>
+  </div>
+  <div class="checks-bar"><span class="cltotal">Отмечено 0 из 0</span><button type="button" class="reset">Сбросить отметки в этом разделе</button></div>
+  <div class="checks">
+    <div class="cl" id="list-reg"><div class="cl-head"><h3>Форма регистрации</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="r-reg-1"><span><b>1. Почта</b><small>Логин, подтверждается кодом. Для сотрудников — белый список корпоративных доменов, сверенный со всеми компаниями группы.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-2"><span><b>2. Пароль и повтор пароля</b><small>Без кириллицы. Подсказка ИБ: «Пароль должен отличаться от пароля к учётной записи МТС».</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-3"><span><b>3. Фамилия и имя</b><small>Отдельными полями — в 2024 это было юридическим требованием. Нужно ли отчество — уточнить.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-4"><span><b>4. Никнейм</b><small>Если есть публичный рейтинг, галерея или таблица победителей. Фильтр запрещённых слов по полным словоформам.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-5"><span><b>5. Телефон</b><small>Если победителей будут обзванивать. В 2024 и 2025 его не собрали и вспоминали в конце; добавить после старта = правка правил.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-6"><span><b>6. Регион или город</b><small>По месту жительства, без значения по умолчанию. Проверить, что в списке есть все нужные города: в 2026 добавляли Минск.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-7"><span><b>7. Компания группы МТС</b><small>Список дочерних компаний + «иная». В 2026 поле добавили после старта, и уже зарегистрированным пришлось показывать попап.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-8"><span><b>8. Подразделение или должность</b><small>Уточнить у клиента, нужно ли для отчёта, логистики или сегментации рассылок.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-9"><span><b>9. Дата рождения или возраст</b><small>В 2025 — дата рождения (участники 18+). Для детей — возраст цифрами или возрастная группа, без значения по умолчанию.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-10"><span><b>10. Размер одежды и адрес доставки</b><small>Если будет мерч. В 2025 это нужно было для призов.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-11"><span><b>11. Статус родства</b><small>Для детских проектов, обязательное поле. Список вариантов — уточнить.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-12"><span><b>12. Данные ребёнка</b><small>Имя по-русски, возраст цифрами, ник, персонаж. Кнопка «добавить ребёнка»: несколько детей на одну почту.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-13"><span><b>13. Согласие на обработку ПДн</b><small>Обязательно, со ссылкой на PDF. Для детей согласие даёт законный представитель за себя и ребёнка.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-14"><span><b>14. Согласие с правилами акции</b><small>Со ссылкой на полные правила. Формулировку — у юриста.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-15"><span><b>15. Согласие на рассылки</b><small>Уточнить у юриста, нужно ли отдельным пунктом.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-reg-16"><span><b>16. Не собираем: здоровье и инвалидность</b><small>Особая категория ПДн. В 2025 юрист запретил любые поля об этом: свободное поле, чекбокс, селект.</small></span></label>
+      <a class="chip go" href="#tech-reg">Регистрация и валидации</a> <a class="chip go" href="#legal-pd">Персональные данные</a>
+    </div>
+    <div class="cl" id="list-event"><div class="cl-head"><h3>Анкета на офлайн-мероприятие</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="r-ev-1"><span><b>1. Иду / не иду</b><small>Кнопкой в личном кабинете, не ссылкой из письма. Анкета одна на участника, внутри ЛК: в 2024 форма без почты дала 256 дублей.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-ev-2"><span><b>2. Кто придёт</b><small>Участник и сопровождающие. ФИО сопровождающих — если нужны для прохода, в 2025 их передавали каждый день.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-ev-3"><span><b>3. Сколько детей и какого возраста</b><small>Для детских проектов. Заранее решить с клиентом, можно ли одному родителю прийти с двумя детьми и пускают ли малышей.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-ev-4"><span><b>4. Данные для прохода на площадку</b><small>Уточнить у площадки, что нужно: например, паспорт.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-ev-5"><span><b>5. Нужна ли встреча и сопровождение до площадки</b><small>Как в 2025: встреча у метро, волонтёр. Без вопросов о здоровье.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-ev-6"><span><b>6. Телефон для связи в день мероприятия</b><small>Если его нет в регистрации. Нужен для обзвона и дожима.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-ev-7"><span><b>7. Отбивка после отправки</b><small>«Анкета принята, дополнительных подтверждений не требуется».</small></span></label>
+      <a class="chip go" href="#off-event">Офлайн-мероприятие</a>
+    </div>
+    <div class="cl" id="list-mail"><div class="cl-head"><h3>Письма и рассылки</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="r-mail-1"><span><b>1. Шаблон письма</b><small>Дизайн и вёрстка вместе с предфинальным дизайном сайта. На нём собираются все письма ниже.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-2"><span><b>2. Код подтверждения почты</b><small>К запуску, первым письмом на шаблоне.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-3"><span><b>3. Сброс пароля</b><small>К запуску.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-4"><span><b>4. Запись на слот</b><small>Участнику и эксперту.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-5"><span><b>5. Отмена и перенос записи</b><small>Обеим сторонам.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-6"><span><b>6. Напоминание в день встречи</b><small>Обеим сторонам. В 2025 без него эксперты пропускали слоты.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-7"><span><b>7. Анонс новых активностей или волны</b><small>По сегментам в админке.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-8"><span><b>8. Приглашение на мероприятие</b><small>Примерно за 10 дней, со всеми деталями и кнопкой «иду / не иду» в личном кабинете.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-9"><span><b>9. Напоминание тем, кто не ответил</b><small>Дожим перед мероприятием.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-10"><span><b>10. Напоминание перед мероприятием</b><small>Тем, кто идёт: что взять, как добраться.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-11"><span><b>11. «Последний шанс» перед закрытием регистрации</b><small>Было в 2025.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-12"><span><b>12. Приглашение на трансляцию</b><small>Для регионов, без персонализации.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-13"><span><b>13. Победителям</b><small>Отдельно по каждому типу приза: главный приз, мерч.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-14"><span><b>14. Уникальные промокоды</b><small>В 2025 эту функцию доделывали после запуска.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-15"><span><b>15. Перенос мероприятия</b><small>Всем записавшимся. В 2026 писали примерно 100 людям.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-mail-16"><span><b>16. Спецзадание, напоминания, закрывающее письмо</b><small>В 2024 эти рассылки добавляли после запуска как доп.работы.</small></span></label>
+      <a class="chip go" href="#tech-mail">Письма</a> <a class="chip go" href="#ops-mail">Рассылки</a>
+    </div>
+    <div class="cl" id="list-export"><div class="cl-head"><h3>Полная выгрузка участников</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="r-exp-1"><span><b>1. Все поля регистрации</b><small>Плюс дата и время регистрации.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-2"><span><b>2. Подтверждена ли почта</b></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-3"><span><b>3. Компания или домен почты</b><small>В 2024 долю сотрудников МТС считали по домену вручную, в 2026 поле «компания» добавляли в выгрузку отдельно.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-4"><span><b>4. Баллы</b><small>Итог и по каждой активности.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-5"><span><b>5. Прохождения по активностям</b><small>Сколько раз и когда.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-6"><span><b>6. Записи на слоты</b><small>Когда записался и состоялась ли встреча. В 2026 время записи понадобилось для переноса.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-7"><span><b>7. Статус «иду / не иду» и данные анкеты</b><small>В 2025 статус не попадал в общую выгрузку, и сводили вручную.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-8"><span><b>8. Какие письма получил</b><small>В 2025 это отслеживали в таблице вручную.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-9"><span><b>9. Победы и призы</b></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-10"><span><b>10. Данные детей</b><small>Для детских проектов.</small></span></label>
+      <label class="ci f"><input type="checkbox" id="r-exp-11"><span><b>11. Флаг «тестовый аккаунт»</b><small><span class="idea">идея</span>Чтобы тестовые аккаунты сразу отфильтровывались в Excel.</small></span></label>
+      <a class="chip go" href="#admin-export">Выгрузка и отчёты</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="pitfalls" data-group="Шпаргалки">
+  <div class="sec-head">
+    <div class="eyebrow">Шпаргалки</div>
+    <h2>Грабли, на которые наступали повторно</h2>
+    <p class="sec-lead">Эти ошибки повторились минимум в двух проектах из трёх. Их стоит проверять в первую очередь.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:36%">Грабли</th><th style="width:20%">Где наступили</th><th>Что делаем теперь</th></tr></thead>
+    <tbody>
+      <tr class="f"><td>Механику и баллы дорешивали уже в разработке</td><td><span class="yr y24">2024</span><span class="yr y26">2026</span></td><td>Прототип с текстами и ТЗ, описание каждой активности до дизайна<br><a class="chip" href="#mech-proto">Прототип и ТЗ</a></td></tr>
+      <tr class="f"><td>Правки и договорённости терялись в чате</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Всё в трекер, у каждой задачи исполнитель и проверяющий<br><a class="chip" href="#yg-rules">Правила доски</a></td></tr>
+      <tr class="f"><td>Трекер завели поздно или доступ был не у всех</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Доска готова до старта, доступы всем в первый день<br><a class="chip" href="#yg-prep">Подготовка доски</a></td></tr>
+      <tr class="f"><td>Тестирование началось за день-два до запуска</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Тестировщик с первых сборок, внутренний дедлайн за несколько дней<br><a class="chip" href="#test-who">Тестирование</a></td></tr>
+      <tr class="f"><td>Телефон для связи с победителями не собрали на регистрации</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span></td><td>Поля регистрации — по типовому списку на старте<br><a class="chip" href="#list-reg">Форма регистрации</a></td></tr>
+      <tr class="f"><td>Подтверждение участия через сложные ссылки и формы</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span></td><td>Простая кнопка в личном кабинете, анкета внутри ЛК<br><a class="chip" href="#off-event">Офлайн</a></td></tr>
+      <tr class="f"><td>Рассылки, анкеты и призы не были заложены и делались вручную</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span></td><td>Список рассылок на старте, коммуникации и операционка в смете<br><a class="chip" href="#list-mail">Письма и рассылки</a></td></tr>
+      <tr class="f"><td>Отчётные метрики и выгрузки вспомнили в конце</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span></td><td>Одна полная выгрузка и список метрик с определениями на старте<br><a class="chip" href="#admin-export">Выгрузка и отчёты</a></td></tr>
+      <tr class="f"><td>Доп.работы делали сверх сметы и считали потом</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span></td><td>Журнал доп.работ с часами с первого дня<br><a class="chip" href="#client-scope">Журнал доп.работ</a></td></tr>
+      <tr class="f"><td>Копирайт без ответственного и срока, тексты дописывали в последний момент</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Предфинальные тексты в прототипе, копирайтер на все тексты<br><a class="chip" href="#texts-copy">Копирайт</a></td></tr>
+      <tr class="f"><td>Клиент видел рыбу, lorem ipsum или выдумки ИИ</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Перед каждым показом — сверка текстов и состава макета<br><a class="chip" href="#cl-show">Чек-лист перед показом</a></td></tr>
+      <tr class="f"><td>Нейминг утверждали поздно и блокировали им дизайн или переделывали готовое</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Нейминг — в первых решениях проекта<br><a class="chip" href="#texts-naming">Нейминг</a></td></tr>
+      <tr class="f"><td>Бесплатная Figma: PM не может править макет и убирать комменты</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Платные места и клиентская фигма под нашим контролем<br><a class="chip" href="#design-figma">Фигма</a></td></tr>
+      <tr class="f"><td>Бренд заворачивал фоны, цвета и компоненты не по гайдам</td><td><span class="yr y24">2024</span><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Только компоненты UI-kit, показ клиенту после сверки с гайдами<br><a class="chip" href="#design-brand">Бренд МТС</a></td></tr>
+      <tr class="f"><td>Хостинг падал или резал почту в критичный момент</td><td><span class="yr y25">2025</span><span class="yr y26">2026</span></td><td>Проверка инфраструктуры до запуска и резервный стенд<br><a class="chip" href="#tech-hosting">Хостинг</a></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="checklists" data-group="Шпаргалки">
+  <div class="sec-head">
+    <div class="eyebrow">Шпаргалки</div>
+    <h2>Чек-листы по этапам</h2>
+    <p class="sec-lead">Короткая версия всего выше для проверки перед каждым этапом. Отметки сохраняются в этом браузере, так что можно вести по ним текущий проект.</p>
+  </div>
+  <div class="checks-bar"><span class="cltotal">Отмечено 0 из 0</span><button type="button" class="reset">Сбросить отметки в этом разделе</button></div>
+  <div class="checks">
+    <div class="cl" id="cl-prestart"><div class="cl-head"><h3>До старта, пока нет информации</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-prestart-0"><span>Доска YouGile подготовлена по шаблону: колонки, стикеры, служебные колонки</span></label>
+      <label class="ci f"><input type="checkbox" id="c-prestart-1"><span>2–3 варианта домена с «mts» проверены на занятость и ассоциации</span></label>
+      <label class="ci f"><input type="checkbox" id="c-prestart-2"><span>Чат с темами и папка проекта заведены, места в Figma оплачены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-prestart-3"><span>Юрист, копирайтер, тестировщик, дизайнер и запасной забронированы, графики и праздники известны</span></label>
+      <label class="ci f"><input type="checkbox" id="c-prestart-4"><span>Хостинг с балансом, SMTP, HTTPS, CI и резервный стенд готовы</span></label>
+      <label class="ci f"><input type="checkbox" id="c-prestart-5"><span>Список вопросов к кикоффу собран, типовые списки пройдены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-prestart-6"><span>Заготовки из прошлых проектов подняты: согласие на ПДн, правила, FAQ, список писем, фильтр слов</span></label>
+      <a class="chip go" href="#phase-pre">До старта</a>
+    </div>
+    <div class="cl" id="cl-start"><div class="cl-head"><h3>Старт</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-start-1"><span>Внутренний тайминг с задачами клиента и таблица дат открытия</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-2"><span>Доступы к доске у всех, каждый подтвердил, что видит её</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-3"><span>Клиентская фигма отдельным файлом</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-4"><span>Гайды и UI-kit клиента есть у дизайнера и фронта</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-5"><span>Редполитика, Tone of Voice и эталонный список названий получены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-6"><span>Домен с «mts», регистратор и схема передачи МТС выяснены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-7"><span>Ящик поддержки на домене и заглушка на проде</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-8"><span>Домены и адреса отданы в вайт-листы СБ</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-9"><span>Цены с подрядчиками согласованы</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-10"><span>С клиентом согласованы продвижение, коммуникации, отчётные метрики, поля регистрации и трансляция</span></label>
+      <label class="ci f"><input type="checkbox" id="c-start-11"><span>Журнал доп.работ заведён</span></label>
+      <a class="chip go" href="#start">Старт проекта</a>
+    </div>
+    <div class="cl" id="cl-design"><div class="cl-head"><h3>Перед дизайном и разработкой</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-design-0"><span>Прототип с предфинальными текстами готов, ТЗ с ним полностью совпадает</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-1"><span>Прототип прогнан через разработчиков</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-2"><span>По каждой активности описаны шаги, исходы, попытки, баллы, роли, возрасты, хранение и ограничения контента</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-3"><span>Пройдена таблица «Исключаем логикой»: что закрываем в механике, что остаётся на проверку</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-4"><span>Тай-брейк рейтинга и пороги розыгрышей проверены на реалистичность</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-5"><span>Описана админка: пользователи, модерация, даты, логи, полная выгрузка</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-6"><span>Составлен список писем и рассылок, у каждой рассылки есть сегмент</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-7"><span>Нейминг разделов и возрастные группы утверждены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-design-8"><span>Юристу отправлено полное описание механики и призов</span></label>
+      <a class="chip go" href="#mech-proto">Прототип и ТЗ</a> <a class="chip go" href="#prevent">Исключаем логикой</a>
+    </div>
+    <div class="cl" id="cl-show"><div class="cl-head"><h3>Перед показом клиенту</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-show-1"><span>В макетах предфинальные тексты из прототипа, нет рыбы и выдумок ИИ</span></label>
+      <label class="ci f"><input type="checkbox" id="c-show-2"><span>Нарисованы все состояния и модалки, мобилка в реальных пропорциях</span></label>
+      <label class="ci f"><input type="checkbox" id="c-show-3"><span>Макет сверен с гайдами МТС</span></label>
+      <label class="ci f"><input type="checkbox" id="c-show-4"><span>Прототип и ТЗ обновлены после последних правок</span></label>
+      <label class="ci f"><input type="checkbox" id="c-show-5"><span>Пакет на согласование собран: что, кому, срок ответа</span></label>
+      <a class="chip go" href="#design-mockups">Что в макетах</a>
+    </div>
+    <div class="cl" id="cl-launch"><div class="cl-head"><h3>Перед запуском</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-launch-1"><span>Внутренний дедлайн готовности пройден, PM принял сборку</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-2"><span>СБ и ИБ МТС посмотрели платформу</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-3"><span>На проде проверены HTTPS, SMTP, доступы для деплоя и фоновые задачи</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-4"><span>Регистрация: код на почту, подсказка про пароль МТС, фильтр проверен на реальных ФИО</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-5"><span>Шаблон письма свёрстан, все письма к запуску получены на свою почту</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-6"><span>Правила на сайте совпадают с согласованным финалом, согласие на ПДн на месте, договор с оператором подписан</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-7"><span>Контент и даты открытия в админке, лишнее закрыто</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-8"><span>Все возрасты и роли пройдены на iOS Safari, Android и десктопе</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-9"><span>Цели метрики стоят на всех точках входа в регистрацию</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-10"><span>Полная выгрузка работает и сверена с админкой</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-11"><span>Разработчики на связи в день запуска и на следующий день</span></label>
+      <label class="ci f"><input type="checkbox" id="c-launch-12"><span>FAQ и шаблоны ответов для поддержки готовы</span></label>
+      <a class="chip go" href="#launch-before">Запуск</a>
+    </div>
+    <div class="cl" id="cl-wave"><div class="cl-head"><h3>Перед каждой новой волной</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-wave-1"><span>Список стартующих активностей и проверяющий назначены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-wave-2"><span>Контент для всех возрастов в админке, статус «опубликовано», даты верные</span></label>
+      <label class="ci f"><input type="checkbox" id="c-wave-3"><span>Новости и тексты правил обновлены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-wave-4"><span>После деплоя пройдены ключевые сценарии</span></label>
+      <a class="chip go" href="#ops-waves">Релизы волн</a>
+    </div>
+    <div class="cl" id="cl-mail"><div class="cl-head"><h3>Перед рассылкой</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-mail-1"><span>Сегмент и фильтр проверены, дубли и отказавшиеся убраны</span></label>
+      <label class="ci f"><input type="checkbox" id="c-mail-2"><span>Тестовая отправка себе: картинки, ссылки, обращение</span></label>
+      <label class="ci f"><input type="checkbox" id="c-mail-3"><span>Повторная отправка невозможна</span></label>
+      <label class="ci f"><input type="checkbox" id="c-mail-4"><span>Время и даты указаны по Москве</span></label>
+      <a class="chip go" href="#ops-mail">Рассылки</a>
+    </div>
+    <div class="cl" id="cl-stream"><div class="cl-head"><h3>Трансляция</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-stream-1"><span>Известно, кто делает трансляцию и на какой площадке; запись, субтитры и хранение в смете</span></label>
+      <label class="ci f"><input type="checkbox" id="c-stream-2"><span>Документация по встраиванию получена, разработчик на прямой связи с подрядчиком</span></label>
+      <label class="ci f"><input type="checkbox" id="c-stream-3"><span>Заглушка и письмо-приглашение готовы</span></label>
+      <label class="ci f"><input type="checkbox" id="c-stream-4"><span>Тестовый поток за день проверен на мобилке и десктопе</span></label>
+      <label class="ci f"><input type="checkbox" id="c-stream-5"><span>В день эфира стоит боевой ID, кнопка сменилась на «Смотреть трансляцию»</span></label>
+      <label class="ci f"><input type="checkbox" id="c-stream-6"><span>После эфира запись сжата, с субтитрами, ссылки проверены</span></label>
+      <a class="chip go" href="#off-stream">План трансляции</a>
+    </div>
+    <div class="cl" id="cl-draw"><div class="cl-head"><h3>Розыгрыш</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-draw-1"><span>Выгрузка на момент розыгрыша, исключения помечены</span></label>
+      <label class="ci f"><input type="checkbox" id="c-draw-2"><span>Топ проверен на мультиаккаунты</span></label>
+      <label class="ci f"><input type="checkbox" id="c-draw-3"><span>Видео розыгрыша записано</span></label>
+      <label class="ci f"><input type="checkbox" id="c-draw-4"><span>Победители опубликованы по нику или коду, письма отправлены, данные переданы клиенту</span></label>
+      <a class="chip go" href="#off-draw">Розыгрыш</a>
+    </div>
+    <div class="cl" id="cl-close"><div class="cl-head"><h3>Закрытие</h3><span class="prog"></span></div><div class="bar"><i></i></div>
+      <label class="ci f"><input type="checkbox" id="c-close-1"><span>Отчёт по согласованным метрикам отправлен</span></label>
+      <label class="ci f"><input type="checkbox" id="c-close-2"><span>Доп.смета собрана по журналу</span></label>
+      <label class="ci f"><input type="checkbox" id="c-close-3"><span>Финальная выгрузка сделана, все файлы и записи забраны с сервера</span></label>
+      <label class="ci f"><input type="checkbox" id="c-close-4"><span>Домен передан после финальной рассылки</span></label>
+      <label class="ci f"><input type="checkbox" id="c-close-5"><span>Ретро записано и перенесено в памятку</span></label>
+      <a class="chip go" href="#closing">Закрытие</a>
+    </div>
+  </div>
+</section>
+
+<nav class="pager" id="pager" aria-label="Соседние разделы"></nav>
+
+<footer>
+  Собрано по опыту трёх проектов: Кодиленд (2024), инклюзивный карьерный марафон (2025) и СоздАния (2026). Пометка <span class="idea">идея</span> — предложение на подумать, в прошлых проектах такого решения не было. Отметки в чек-листах и списках хранятся только в этом браузере.
+</footer>
+</main>
+</div>
+<button type="button" class="backbtn" id="backbtn" hidden>← <span id="backlbl">Назад</span></button>
+
+<script>
+(function(){
+  function $(s,r){return (r||document).querySelector(s);}
+  function $$(s,r){return [].slice.call((r||document).querySelectorAll(s));}
+  function norm(s){return (s||'').toLowerCase().replace(/ё/g,'е').replace(/\s+/g,' ');}
+  function plural(n){var a=n%10,b=n%100;if(a===1&&b!==11)return 'совпадение';if(a>=2&&a<=4&&(b<12||b>14))return 'совпадения';return 'совпадений';}
+  function scrollTop(y){window.scrollTo({top:Math.max(0,y),behavior:'instant'});}
+
+  var secs=$$('section.sec'), order=secs.map(function(s){return s.id;}), titles={};
+  secs.forEach(function(s){titles[s.id]=$('h2',s).textContent;});
+  var hero=$('#hero'), pager=$('#pager'), backbtn=$('#backbtn'), backlbl=$('#backlbl');
+  var q=$('#q'), cnt=$('#qcount'), clr=$('#qclear'), nores=$('#nores'), rtop=$('#results-top');
+  var tocLinks=$$('.toc a'), tb=$('#tocbox'), mq=window.matchMedia('(max-width:980px)');
+  var units=$$('.f'); units.forEach(function(u){u._t=norm(u.textContent);});
+  var boxes=$$('.card,.tbl,.cl,.rules,.callout,.proto');
+  var cur=order[0], stack=[];
+
+  function setHash(h){try{history.replaceState(null,'','#'+h);}catch(err){}}
+
+  /* вкладки: показываем один раздел */
+  function renderView(){
+    secs.forEach(function(s){s.hidden=(s.id!==cur);});
+    hero.hidden=(cur!==order[0]);
+    tocLinks.forEach(function(a){if(a.getAttribute('href')==='#'+cur)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');});
+    var i=order.indexOf(cur), h='';
+    if(i>0)h+='<a class="prev" href="#'+order[i-1]+'" data-nav="1"><small>← Предыдущий раздел</small>'+titles[order[i-1]]+'</a>';
+    if(i<order.length-1)h+='<a class="next" href="#'+order[i+1]+'" data-nav="1"><small>Следующий раздел →</small>'+titles[order[i+1]]+'</a>';
+    pager.innerHTML=h; pager.hidden=false;
+  }
+  function updateBack(){
+    if(!stack.length){backbtn.hidden=true;return;}
+    var t=stack[stack.length-1];
+    backlbl.textContent='Назад: '+(t.q?'поиск «'+t.q+'»':titles[t.view]);
+    backbtn.hidden=false;
+  }
+  function flash(el){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+  function go(id,remember){
+    var el=document.getElementById(id); if(!el)return false;
+    var sec=el.closest('section.sec'); if(!sec)return false;
+    if(remember)stack.push({view:cur,y:window.scrollY,q:q.value});
+    if(q.value){q.value='';applySearch(true);}
+    cur=sec.id; renderView(); setHash(id);
+    if(el===sec){scrollTop(0);}
+    else{scrollTop(el.getBoundingClientRect().top+window.scrollY-96);flash(el);}
+    updateBack();
+    return true;
+  }
+  backbtn.addEventListener('click',function(){
+    var s=stack.pop(); if(!s)return;
+    cur=s.view; q.value=s.q||''; applySearch(true);
+    if(!q.value)setHash(cur);
+    scrollTop(s.y); updateBack();
+  });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]'); if(!a)return;
+    var id=a.getAttribute('href').slice(1); if(!id||!document.getElementById(id))return;
+    e.preventDefault();
+    if(a.closest('.toc')||a.hasAttribute('data-nav')){stack=[];go(id,false);if(mq.matches)tb.open=false;}
+    else go(id,true);
+  });
+  window.addEventListener('hashchange',function(){var id=location.hash.slice(1);if(id&&document.getElementById(id)){stack=[];go(id,false);}});
+
+  /* поиск по всем разделам */
+  function applySearch(silent){
+    var v=norm(q.value).trim(), on=v.length>0, n=0;
+    document.body.classList.toggle('searching',on);
+    units.forEach(function(u){var ok=!on||u._t.indexOf(v)>-1;u.hidden=!ok;if(on&&ok)n++;});
+    boxes.forEach(function(b){b.hidden=on&&!b.querySelector('.f:not([hidden])');});
+    if(on){secs.forEach(function(s){s.hidden=!s.querySelector('.f:not([hidden])');});hero.hidden=true;pager.hidden=true;
+      tocLinks.forEach(function(a){a.removeAttribute('aria-current');});}
+    else renderView();
+    cnt.textContent=on?(n+' '+plural(n)):'';
+    clr.hidden=!on; nores.hidden=!(on&&n===0);
+  }
+  q.addEventListener('input',function(){
+    applySearch();
+    var y=rtop.getBoundingClientRect().top+window.scrollY-90;
+    if(window.scrollY>y)scrollTop(y);
+  });
+  q.addEventListener('keydown',function(e){if(e.key==='Escape'){q.value='';applySearch();}});
+  clr.addEventListener('click',function(){q.value='';applySearch();scrollTop(0);q.focus();});
+
+  /* мобильное оглавление */
+  function setToc(){tb.open=!mq.matches;}
+  setToc(); if(mq.addEventListener)mq.addEventListener('change',setToc);
+
+  /* подписи колонок для мобильной версии таблиц */
+  $$('.tbl table').forEach(function(t){
+    var hs=$$('thead th',t).map(function(h){return h.textContent;});
+    $$('tbody tr',t).forEach(function(r){[].slice.call(r.children).forEach(function(td,i){if(i>0&&hs[i])td.setAttribute('data-label',hs[i]);});});
+  });
+
+  /* копирование шаблонов */
+  $$('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var pre=b.parentNode.querySelector('pre'),txt=pre.textContent;
+      function done(m){b.textContent=m;setTimeout(function(){b.textContent='Копировать';},1600);}
+      function fallback(){var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done('Выделено — нажми Ctrl+C');}
+      try{navigator.clipboard.writeText(txt).then(function(){done('Скопировано');},fallback);}catch(err){fallback();}
+    });
+  });
+
+  /* чек-листы и списки: отметки в браузере */
+  var KEY='deep-rules-checks',state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(err){state={};}
+  var all=$$('.cl input[type=checkbox]');
+  all.forEach(function(i){i.checked=!!state[i.id];});
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(err){}}
+  function prog(){
+    $$('.cl').forEach(function(c){
+      var ins=$$('input[type=checkbox]',c),d=ins.filter(function(i){return i.checked;}).length;
+      $('.prog',c).textContent=d+' / '+ins.length;
+      $('.bar i',c).style.width=(ins.length?d/ins.length*100:0)+'%';
+    });
+    $$('.checks-bar').forEach(function(bar){
+      var sec=bar.closest('section'),ins=$$('.cl input[type=checkbox]',sec),d=ins.filter(function(i){return i.checked;}).length;
+      $('.cltotal',bar).textContent='Отмечено '+d+' из '+ins.length;
+    });
+  }
+  all.forEach(function(i){i.addEventListener('change',function(){if(i.checked)state[i.id]=1;else delete state[i.id];save();prog();});});
+  $$('.checks-bar .reset').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      $$('.cl input[type=checkbox]',btn.closest('section')).forEach(function(i){i.checked=false;delete state[i.id];});
+      save();prog();
+    });
+  });
+  prog();
+
+  /* старт: открываем раздел из адреса или первый */
+  var h0=location.hash.slice(1);
+  if(!(h0&&go(h0,false)))renderView();
+})();
+</script>
+</body>
+</html>
